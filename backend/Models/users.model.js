@@ -1,5 +1,17 @@
 import mongoose from "mongoose";
 
+// Playlist Schema
+const playlistSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    required: true
+  },
+  videos: {
+    type: [String], // Array of video IDs or URLs
+    default: []     // Default is an empty array
+  }
+});
+
 const userSchema = new mongoose.Schema({
   username: {
     type: String,
@@ -25,6 +37,17 @@ const userSchema = new mongoose.Schema({
   },
   channels: {
     type: [String]
+  },
+  subscription: {
+    type: [String],
+    default: []
+  },
+  playlists: {
+    type: [playlistSchema],
+    default: [
+      { name: "Liked Videos", videos: [] },
+      { name: "Watch Later", videos: [] }
+    ]
   }
 });
 

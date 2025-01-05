@@ -1,9 +1,19 @@
 import React from 'react'
+import { Outlet } from 'react-router-dom'
+import Header from './Header'
+import Sidebar from './Sidebar'
+import '../styles/style.css'
+import Appnav from './Appnav'
 
 export default function App() {
   return (
-    <div>
-      <h1>Hello</h1>
+    <div className='flex flex-col h-screen'>
+      <Header/>
+      <div className='flex flex-1 gap-5'>
+        <Sidebar/>
+        <Outlet/>
+      </div>
+      <Appnav/>
     </div>
   )
 }
