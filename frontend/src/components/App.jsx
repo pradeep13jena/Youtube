@@ -9,7 +9,7 @@ export default function App() {
   return (
     <div className='flex flex-col h-screen'>
       <Header/>
-      <div className='flex flex-1 gap-5'>
+      <div className='flex flex-1 gap-0'>
         <Sidebar/>
         <Outlet/>
       </div>

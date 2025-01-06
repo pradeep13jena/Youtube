@@ -10,6 +10,7 @@ import { store } from './src/features/store'
 import { Provider } from 'react-redux'
 import Account from './src/components/Account'
 import { Subscriptions } from '@mui/icons-material'
+import PlaylistViewer from './src/components/PlaylistViewer'
 
 const router = createBrowserRouter([
   {
@@ -27,6 +28,10 @@ const router = createBrowserRouter([
       {
         path: '/channel/:channel',
         element: <Channel/>
+      },
+      {
+        path: '/feed/playlists',
+        element: <PlaylistViewer/>
       },
       {
         path: '/feed/subscriptions',

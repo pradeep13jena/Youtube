@@ -204,15 +204,15 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col justify-start pb-5 w-full overflow-y-auto">
+    <div className="flex flex-col px-0 sm:px-5 justify-start pb-5 w-full overflow-y-auto">
       <div 
         id="id1" 
-        className="flex items-center justify-start gap-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
+        className="flex items-center justify-start gap-2 px-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
       >
         {videoGenres.map((cat, index) => (
           <div 
             key={index} 
-            className="shrink-0 min-w-max px-2 py-1 bg-gray-200 rounded-lg text-gray-800 hover:bg-gray-300 cursor-pointer"
+            className="shrink-0 min-w-max px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 cursor-pointer"
           >
             <Filter item={cat} />
           </div>
@@ -220,7 +220,7 @@ export default function Home() {
       </div>
 
       {/* Body Section */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-143.2px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
+      <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-143.2px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         {videos.map((cat, index) => {
           return (
             <div key={index} className="flex flex-col">
