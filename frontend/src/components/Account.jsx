@@ -29,7 +29,7 @@ export default function Account() {
     {
       name: "Watch later",
       thumbnail:
-      "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
+        "https://ik.imagekit.io/kf28wicizj/Youtube/playlist.jpg?updatedAt=1736162630427",
       description: "Original songs, covers, and music reviews.",
       category: "Music",
       subscribers: 2000000,
@@ -37,7 +37,7 @@ export default function Account() {
     {
       name: "Liked videos",
       thumbnail:
-      "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
+        "https://ik.imagekit.io/kf28wicizj/Youtube/playlist.jpg?updatedAt=1736162630427",
       description: "Gaming walkthroughs, reviews, and live streams.",
       category: "Gaming",
       subscribers: 1750000,
@@ -45,7 +45,7 @@ export default function Account() {
     {
       name: "Cinema Central",
       thumbnail:
-      "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
+        "https://ik.imagekit.io/kf28wicizj/Youtube/playlist.jpg?updatedAt=1736162630427",
       description: "Movie reviews, trailers, and entertainment news.",
       category: "Entertainment",
       subscribers: 1300000,
@@ -207,7 +207,9 @@ export default function Account() {
             <div className="cursor-pointer rounded-full w-10 h-10 flex items-center justify-center border-2 hover:bg-gray-100">
               <AddIcon/>
             </div>
-            <p className='py-2 px-4 border-2 rounded-full cursor-pointer hover:bg-gray-100'>View all</p>
+            <Link to={'/playlist/Liked videos'}>
+              <p className='py-2 px-4 border-2 rounded-full cursor-pointer hover:bg-gray-100'>View all</p>
+            </Link>
           </div>
         </div>
         {/* Cards */}

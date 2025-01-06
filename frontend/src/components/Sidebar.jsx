@@ -21,11 +21,11 @@ export default function Sidebar() {
       icons: <SubscriptionsSharpIcon sx={{fontSize: 25}}/>,
       label: 'Subscription'
     }, {
-      navigate: '/playlist/watchlater',
+      navigate: '/playlist/Watch later',
       icons: <AccessTimeSharpIcon sx={{fontSize: 25}}/>,
       label: 'Watch later'
     }, {
-      navigate: '/playlist/likedvideos',
+      navigate: '/playlist/Liked videos',
       icons: <ThumbUpAltOutlinedIcon sx={{fontSize: 25}}/>,
       label: 'Liked vidoes'
     }, {
@@ -51,7 +51,7 @@ export default function Sidebar() {
   // 
   
   return (
-    <nav className={`hidden ${isToggle ?  'w-64' : 'w-20'} divide-y-2 md:flex gap-5 mt-2 md:h-[calc(100vh-70.2px)] md:flex-col items-start p-2 md:bg-white overflow-y-auto`}>
+    <nav className={`hidden ${isToggle ?  'w-68' : 'w-20'} divide-y-2 md:flex gap-5 mt-2 md:h-[calc(100vh-70.2px)] md:flex-col items-start p-2 md:bg-white overflow-y-auto`}>
       {/* First */}
         <ul className='flex flex-col gap-2 w-full'>
           {menuItem.map((cat, index) => {

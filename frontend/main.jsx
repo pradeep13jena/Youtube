@@ -9,8 +9,9 @@ import Watch from './src/components/Watch'
 import { store } from './src/features/store'
 import { Provider } from 'react-redux'
 import Account from './src/components/Account'
-import { Subscriptions } from '@mui/icons-material'
-import PlaylistViewer from './src/components/PlaylistViewer'
+import Subscription from './src/components/Subscription'
+import Playlistseen from './src/components/Playlistseen'
+import Channelseen from './src/components/Channelseen'
 
 const router = createBrowserRouter([
   {
@@ -31,11 +32,15 @@ const router = createBrowserRouter([
       },
       {
         path: '/feed/playlists',
-        element: <PlaylistViewer/>
+        element: <Playlistseen/>
+      },
+      {
+        path: '/feed/channels',
+        element: <Channelseen/>
       },
       {
         path: '/feed/subscriptions',
-        element: <Subscriptions/>
+        element: <Subscription/>
       },
       {
         path: "/playlist/:playlist",
