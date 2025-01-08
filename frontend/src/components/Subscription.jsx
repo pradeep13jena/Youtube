@@ -1,6 +1,8 @@
 import React from 'react'
 import Homeviewer from './Homeviewer';
+import { deepOrange } from '@mui/material/colors';
 import Filter from './Filter';
+import { Avatar } from '@mui/material';
 
 export default function Subscription() {
   const channels = [
@@ -236,11 +238,22 @@ export default function Subscription() {
           className="flex items-center justify-start gap-5 px-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
         >
           {channels.map((cat, index) => (
-            <div 
-              key={index} 
-              className="shrink-0 min-w-max cursor-pointer">
-              <Filter thumbnail={cat.thumbnail} name={cat.name} />
-            </div>
+            <div key={index} className='flex flex-col justify-center items-center gap-1'>
+            <Avatar
+            sx={{
+              width: {xs: 40, md: 50 }, // Adjust sizes for different breakpoints
+              height: {xs: 40, md: 50 },
+              bgcolor: deepOrange[500],
+            }}
+          >
+            P
+          </Avatar>
+          </div>
+            // <div 
+            //   key={index} 
+            //   className="shrink-0 min-w-max cursor-pointer">
+            //   <Filter thumbnail={cat.thumbnail} name={cat.name} />
+            // </div>
           ))}
         </div>
       </div>

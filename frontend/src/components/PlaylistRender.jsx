@@ -5,32 +5,9 @@ import { MoreVertOutlined } from "@mui/icons-material";
 import AddIcon from '@mui/icons-material/Add';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import CloseIcon from '@mui/icons-material/Close';
-
-const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
-  bgcolor: 'background.paper',
-  boxShadow: 24,
-  width: { xs: '90%', sm: '35%', md: '250px'},
-  borderRadius: '0.375rem',
-  p: 2,
-  outline: 0,
-};
-
-
-const playlist = ["Top Hits 2025", "Relaxing Vibe", "Liked videos", 'Watch later']
 
 export default function Homeviewer(cat) {
-    const [openModal, setOpenModal] = useState(false)
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
+  const [openModal, setOpenModal] = useState(false)
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
@@ -82,38 +59,8 @@ export default function Homeviewer(cat) {
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
                   <WatchLaterOutlinedIcon />
                   <h1 className="text-base font-roboto ">
-                    Add to watch Later
+                    Remove from playlist
                   </h1>
-                </div>
-                <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
-                  <BookmarkBorderOutlinedIcon />
-                  <h1 onClick={handleOpen} className="text-base font-roboto ">
-                    Save to playlist
-                  </h1>
-                  <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                  >
-                  <Box sx={style}>
-                    <div className="flex flex-col gap-1 px-3 py-2">
-                      <div className="mb-7 flex items-center justify-between">
-                        <h1 className="text-2xl font-roboto font-bold">Playlist</h1>
-                      </div>
-                      {
-                        playlist.map((cat, index) => {
-                          return (
-                            <div key={index} className="flex w-full items-center justify-start gap-6">
-                              <input className="w-4 h-4" type="checkbox" value={cat} name={cat} id={cat} />
-                              <label className="text-lg cursor-pointer font-roboto" htmlFor={cat}>{cat}</label>
-                            </div>
-                          )
-                        })
-                      }
-                    </div>
-                  </Box>
-                  </Modal>
                 </div>
               </div>
             </div>

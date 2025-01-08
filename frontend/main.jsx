@@ -12,6 +12,7 @@ import Account from './src/components/Account'
 import Subscription from './src/components/Subscription'
 import Playlistseen from './src/components/Playlistseen'
 import Channelseen from './src/components/Channelseen'
+import ChannelOwner from './src/components/ChannelOwner'
 
 const router = createBrowserRouter([
   {
@@ -19,7 +20,7 @@ const router = createBrowserRouter([
     element: <App/>,
     children: [
       {
-        path: "/home",
+        path: "/",
         element: <Home/>
       }, 
       {
@@ -49,6 +50,10 @@ const router = createBrowserRouter([
       {
         path: '/feed/you',
         element: <Account/>
+      },
+      {
+        path: '/owner/:channel',
+        element: <ChannelOwner/>
       }
     ]
   }

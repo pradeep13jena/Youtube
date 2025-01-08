@@ -3,7 +3,6 @@ import { Link } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
 export default function PlaylistCards({thumbnail, title, channelName, views}) {
-  const [modalopen, setModelopen] = useState(false)
   return (
       <div className="flex-shrink-0 w-60">
         <Link to={'/videos/watch'}>

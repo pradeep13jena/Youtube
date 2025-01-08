@@ -4,8 +4,27 @@ import React, { useState } from "react";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined } from "@mui/icons-material";
 import Homeviewer from "./Homeviewer.jsx";
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+import Modal from '@mui/material/Modal';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  boxShadow: 24,
+  p: 2,
+};
 
 export default function Home() {
+
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
   const videos = [
     {
       thumbnail:
@@ -206,10 +225,11 @@ export default function Home() {
   ];
 
   return (
-    <div className="flex flex-col px-0 sm:px-5 justify-start pb-2 md:pb-0 w-full overflow-y-auto">
+  <>
+    <div className="flex flex-col px-0 sm:px-5 justify-start pb-2 md:pb-0 w-full overflow-y-auto z-30">
       <div 
         id="id1" 
-        className="flex items-center justify-start gap-2 px-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
+        className="flex items-center justify-start gap-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
       >
         {videoGenres.map((cat, index) => (
           <div 
@@ -226,58 +246,10 @@ export default function Home() {
         {videos.map((cat, index) => {
           return (
             <Homeviewer key={index} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
-            // <div key={index} className="flex flex-col">
-            //   <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
-            //     <img
-            //       src={cat.thumbnail}
-            //       alt=""
-            //       className="md:rounded-lg w-full h-44 sm:h-48 object-cover"
-            //     />
-            //     <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
-            //       <Avatar
-            //         sx={{ width: 35, height: 35, bgcolor: deepPurple[500] }}
-            //       >
-            //         N
-            //       </Avatar>
-            //       <div className="flex flex-col gap-[.8px] flex-1">
-            //         <h1 className="text-base font-semibold">{cat.title}</h1>
-            //         <div className="flex md:flex-col items-center md:items-start">
-            //           <p className="text-gray-700 text-[11px] md:text-[13px]">
-            //             {cat.channelName}
-            //           </p>
-            //           {window.screen.availWidth < 640 ? (
-            //             <p className="text-[10px] px-1 text-gray-500 md:hidden">
-            //               &#x2022;
-            //             </p>
-            //           ) : (
-            //             ""
-            //           )}
-            //           <div className="flex items-end">
-            //             <p className=" text-gray-700 text-[11px] md:text-[13px]">
-            //               {cat.views} views{" "}
-            //             </p>
-            //             <p className="text-[10px] px-1 text-gray-500">
-            //               &#x2022;
-            //             </p>
-            //             <p className=" text-gray-700 text-[11px] md:text-[13px]">
-            //               {cat.views} views{" "}
-            //             </p>
-            //           </div>
-            //         </div>
-            //       </div>
-            //       <div className=''>
-            //         <MoreVertOutlined className='cursor-pointer' onClick={() => setOpenModal(!openModal)}/>
-            //         <div className={` bottom-14 right-0 rounded-sm shadow-md bg-white ${openModal ? 'fixed' : 'hidden'} `}>
-            //           <h1 className='text-base font-roboto py-1 px-2 rounded-sm hover:text-white cursor-pointer hover:bg-green-500'>Add videos</h1>
-            //           <h1 className='text-base font-roboto py-1 px-2 rounded-sm hover:text-white cursor-pointer hover:bg-red-500'>Delete Channel</h1>
-            //         </div>
-            //       </div>
-            //     </div>
-            //   </div>
-            // </div>
           );
         })}
       </div>
     </div>
+  </>
   );
 }

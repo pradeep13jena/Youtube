@@ -39,9 +39,9 @@ export default function Header(){
           <SearchSharpIcon sx={{fontSize: 24}}/>
         </div>
       </div>
-      <div className='relative hidden md:block z-0'>
+      <div className='relative hidden md:block z-40 '>
         <Avatar className='cursor-pointer' sx={{fontSize: 29, bgcolor: deepOrange[500]}} onClick={() => SetisAccount(!isAccount)}></Avatar>
-        <div className={` ${isAccount ? "" : 'hidden'} w-36 absolute shadow-[0px_8px_24px_0px_rgba(149,_157,_165,_0.2)] rounded-sm right-2 top-9 px-2 py-3`}>
+        <div className={` ${isAccount ? "" : 'hidden'} bg-white w-36 absolute shadow-[0px_8px_24px_0px_rgba(149,_157,_165,_0.2)] rounded-sm right-2 top-9 px-2 py-3`}>
           <ul className='flex flex-col gap-3 justify-center items-start font-roboto'>
             <Link path="/"><li>Sign in</li></Link>
             <Link path="/"><li>Sign up</li></Link>

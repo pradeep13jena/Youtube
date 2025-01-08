@@ -7,7 +7,7 @@ export default function ChannelViewer(Props) {
   const [openModal, setOpenModal] = useState(false)
   return (
     <div className='flex flex-col gap-[1px] transform transition-transform duration-300' >
-      <Link to={`/playlist/${Props.name}`}>
+      <Link to={`/owner/${Props.name}`}>
         <img src={Props.thumbnail} className='w-full object-cover' alt="" />
       </Link>
       <div className='px-2 md:px-0 py-2 flex items-center justify-between'>
