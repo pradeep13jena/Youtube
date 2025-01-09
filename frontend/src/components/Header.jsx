@@ -1,21 +1,34 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import MenuSharpIcon from '@mui/icons-material/MenuSharp';
 import SearchSharpIcon from '@mui/icons-material/SearchSharp';
 import { useDispatch, useSelector } from 'react-redux';
 import { toggleSidebar } from '../features/sidebarSlice';
-import { Avatar } from '@mui/material';
-import { deepOrange, deepPurple, red } from '@mui/material/colors';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios';
 
 export default function Header(){
   const [isAccount, SetisAccount] = useState(false)
+  const [user, setUser] = useState(false)
   const [isSearch, SetisSearch] = useState(false)
   const dispatch = useDispatch()
   
   const handletoggleSidebar = () => {
     dispatch(toggleSidebar())
   }
+
+  useEffect(() => {
+    const username = 'Shivanshu pandey'
+
+    axios.post('http://localhost:5000/user', { username })
+    .then((data) => {
+      setUser(data.data)
+    })
+    .catch((error) => {
+      console.log(error)
+    })
+  }, [])
+  
   return (
     <header className='flex px-5 py-4 md:py-2 justify-between items-center relative'>
       <div className='start flex gap-4 justify-center items-center h-full'>
@@ -40,12 +53,18 @@ export default function Header(){
         </div>
       </div>
       <div className='relative hidden md:block z-40 '>
-        <Avatar className='cursor-pointer' sx={{fontSize: 29, bgcolor: deepOrange[500]}} onClick={() => SetisAccount(!isAccount)}></Avatar>
+      <img src={user.avatar} alt="User Avatar" className="cursor-pointer" onClick={() => SetisAccount(!isAccount)} style={{
+          width: '42px',  // Similar to Avatar size
+          height: '42px', // Similar to Avatar size
+          borderRadius: '50%', // To make it circular like Avatar
+          backgroundColor: '#FF5722', // deepOrange[500] background color
+          fontSize: '29px', // Style for font size if you have text or icon
+        }}/>
         <div className={` ${isAccount ? "" : 'hidden'} bg-white w-36 absolute shadow-[0px_8px_24px_0px_rgba(149,_157,_165,_0.2)] rounded-sm right-2 top-9 px-2 py-3`}>
           <ul className='flex flex-col gap-3 justify-center items-start font-roboto'>
             <Link path="/"><li>Sign in</li></Link>
             <Link path="/"><li>Sign up</li></Link>
-            <Link path='/'><li>Pradeep Jena</li></Link>
+            <Link path='/'><li>{user.username}</li></Link>
             <Link path="/"><li>Create Channel</li></Link>
           </ul>
         </div>

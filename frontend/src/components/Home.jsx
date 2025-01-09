@@ -1,6 +1,6 @@
 import { Avatar } from "@mui/material";
 import Filter from "./Filter.jsx";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { deepOrange, deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined } from "@mui/icons-material";
 import Homeviewer from "./Homeviewer.jsx";
@@ -8,8 +8,9 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import Modal from '@mui/material/Modal';
+import axios from 'axios'
 
-const style = {
+const style1= {
   position: 'absolute',
   top: '50%',
   left: '50%',
@@ -25,175 +26,17 @@ export default function Home() {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const videos = [
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    }
-  ];
+  const [videos, setVideos] = useState([])
+  useEffect(() => {
+    axios.get('http://localhost:5000/videos')
+      .then((data) => {
+        setVideos(data.data)
+      })
+      .catch((err) => {
+        console.log(err)
+      })
+  }, [])
+
 
   const videoGenres = [
     "Nature",
@@ -245,7 +88,7 @@ export default function Home() {
       <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-122.2px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         {videos.map((cat, index) => {
           return (
-            <Homeviewer key={index} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
+            <Homeviewer key={cat._id} _id={cat._id} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
           );
         })}
       </div>

@@ -1,7 +1,7 @@
 import { Avatar } from '@mui/material'
 import { deepOrange, deepPurple } from '@mui/material/colors'
 import { color, height } from '@mui/system'
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
@@ -15,6 +15,8 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Box from '@mui/material/Box';
 import Popper from '@mui/material/Popper';
 import WatchSuggestion from './WatchSuggestion'
+import { useParams, useSearchParams } from 'react-router-dom'
+import axios from 'axios'
 
 const style ={
   border: '1px solid #ddd',
@@ -26,6 +28,9 @@ const style ={
 }
 
 export default function Watch() {
+  const [searchParams] = useSearchParams()
+  const _id = searchParams.get("v")
+
   const [sub, Setsub] = useState(false)
   const [expand, setExpand] = useState(false)
 
@@ -41,6 +46,19 @@ export default function Watch() {
 
   const [comments, setComments] = useState([]);
   const [newComment, setNewComment] = useState("")
+  const [videos, setVideos] = useState({})
+
+  useEffect(() => {
+    axios.get(`http://localhost:5000/videos/${_id}`)
+    .then((data) => {
+      setVideos(data.data)
+      setComments(data.data.comments)
+      console.log(data.data.comments[0].username)
+    })
+    .catch((err) => {
+      console.log(err)
+    })
+  }, [])
   
   const handleAddComment = () => {
     if (newComment.trim() !== "") {
@@ -48,177 +66,6 @@ export default function Watch() {
       setNewComment(""); // Clear the input field
     }
   };
-
-  const videos = [
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/236x/ec/7c/0e/ec7c0e0b557e16fb687652d1924c4480.jpg",
-      title: "Node.js Crash Course",
-      channelName: "The Dev Channel",
-      views: "1.3M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/43/f2/39/43f2392a45622d3a8f889b7be4793e5c.jpg",
-      title: "CSS Flexbox Tutorial for Beginners",
-      channelName: "WebDev Simplified",
-      views: "850K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/94/ae/fe/94aefebbb20286aedf467dea994fda32.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    }
-  ];
-
 
   return (
     <div className='videoWatcher w-full flex flex-col lg:flex-row gap-5 px-0 sm:px-8 py-5 md:h-[calc(100vh-59.2px)] overflow-y-auto'>
@@ -228,7 +75,7 @@ export default function Watch() {
             controls={true}
             playing={true}
             light={false}
-            url={"https://www.youtube.com/watch?v=iu-LBY7NXD4"}
+            url={videos.videoLink}
             width="100%"
             height="100%"
             style={{ position: 'absolute', top: 0, left: 0 }}/>
@@ -237,8 +84,8 @@ export default function Watch() {
 
             {/* Title with views */}
             <div className='flex flex-col justify-start items-start text-sm gap-1 w-full'>
-              <h1 className='videoTitle font-roboto text-sm md:text-[1.3rem] font-semibold'>Creating Custom Video Player with React Player</h1>
-              <p className='text-xs md:text-sm'>45 views</p>
+              <h1 className='videoTitle font-roboto text-sm md:text-[1.3rem] font-semibold'>{videos.title}</h1>
+              <p className='text-xs md:text-sm'>{videos.views} views</p>
             </div>
 
             {/* Channel Details and Action */}
@@ -255,7 +102,7 @@ export default function Watch() {
                     </Avatar>
                   </div>
                   <div className='flex flex-col'>
-                    <h1 className='font-medium font-roboto'>CoderArts</h1>
+                    <h1 className='font-medium font-roboto'>{videos.channelName}</h1>
                     <p className='text-gray-400 font-roboto text-xs md:text-sm'>23.3k subscribers</p>
                   </div>
                 </div>
@@ -292,7 +139,7 @@ export default function Watch() {
               <div className='flex items-center'>
                 <div className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tl-3xl rounded-bl-3xl'>
                   <ThumbUpAltOutlinedIcon sx={{ fontSize: { xs: 22 } }} />
-                  <p className='font-roboto text-xs'>324</p>
+                  <p className='font-roboto text-xs'>{videos.likes}</p>
                 </div>
                 <div className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tr-3xl rounded-br-3xl'>
                   <ThumbDownOutlinedIcon sx={{ fontSize: { xs: 22 } }} />
@@ -316,22 +163,7 @@ export default function Watch() {
             <div className='p-4 w-full bg-gray-200 rounded-lg'>
               <h1 className='text-black font-roboto text-sm font-medium mb-2'>43000 views 12 May 2025</h1>
               <p className={`font-roboto text-sm text-gray-700 duration-300 ${expand ? '' : 'line-clamp-1'}`}>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nemo iure, recusandae itaque praesentium, 
-                nesciunt eos id consequuntur sequi neque tempore optio illo illum odit ad, dolorem dolores alias iusto.
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis necessitatibus quidem veritatis ex 
-                numquam officiis voluptas ab fuga, earum animi, minus, quo laudantium corporis? Totam dolorum labore quibusdam. Possimus, velit?
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nemo iure, recusandae itaque praesentium, 
-                nesciunt eos id consequuntur sequi neque tempore optio illo illum odit ad, dolorem dolores alias iusto.
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis necessitatibus quidem veritatis ex 
-                numquam officiis voluptas ab fuga, earum animi, minus, quo laudantium corporis? Totam dolorum labore quibusdam. Possimus, 
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nemo iure, recusandae itaque praesentium, 
-                nesciunt eos id consequuntur sequi neque tempore optio illo illum odit ad, dolorem dolores alias iusto.
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis necessitatibus quidem veritatis ex 
-                numquam officiis voluptas ab fuga, earum animi, minus, quo laudantium corporis? Totam dolorum labore quibusdam. Possimus, 
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Placeat nemo iure, recusandae itaque praesentium, 
-                nesciunt eos id consequuntur sequi neque tempore optio illo illum odit ad, dolorem dolores alias iusto.
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit. Reiciendis necessitatibus quidem veritatis ex 
-                numquam officiis voluptas ab fuga, earum animi, minus, quo laudantium corporis? Totam dolorum labore quibusdam. Possimus, 
+                {videos.description}
                 </p>
                 <p onClick={() => setExpand(!expand)} className='font-roboto text-sm text-black cursor-pointer'>{expand ? "less" : 'more...'}</p>
             </div>
@@ -379,15 +211,16 @@ export default function Watch() {
                 {comments.length > 0 ? (
                   comments.map((comment, index) => (
                     <div key={index} className="flex items-center justify-between gap-3 mt-4">
-                      <div className='flex justify-between gap-2 items-start'>
+                       <div className='flex justify-between gap-2 items-start'>
+                        {/*
                         <img
                           src="https://via.placeholder.com/40"
                           alt="User avatar"
                           className="w-10 h-10 rounded-full"
-                        />
-                        <div>
-                          <p className="font-medium text-gray-700">User {index + 1}</p>
-                          <p className="text-gray-800">{comment}</p>
+                        />*/}
+                        <div> 
+                          <p className="font-medium text-gray-700">{comment.username}</p>
+                          <p className="text-gray-800">{comment.text}</p>
                         </div>
                       </div>
                       <div>
@@ -419,11 +252,11 @@ export default function Watch() {
       </div>
       <div className="w-full lg:w-[30%] grid grid-cols-1 gap-2 sm:gap-3 px-2">
         <h1 className='text-2xl font-roboto font-semibold mb-5'>Suggested videos</h1>
-        {videos.map((cat, index) => {
+        {/* {videos.map((cat, index) => {
           return (
             <WatchSuggestion key={index} cat={cat}/>
           )
-        })}
+        })} */}
       </div>
     </div>
 )}

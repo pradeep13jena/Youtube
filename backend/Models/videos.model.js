@@ -15,6 +15,16 @@ const commentSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  likes: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
+  dislikes: {
+    type: Number,
+    default: 0,
+    min: 0,
+  },
 });
 
 const videoSchema = new mongoose.Schema({
@@ -24,6 +34,16 @@ const videoSchema = new mongoose.Schema({
     trim: true,
   },
   thumbnail: {
+    type: String,
+    required: true,
+    validate: {
+      validator: function (v) {
+        return /^(http|https):\/\/[^\s]+$/.test(v); // Validates URL format
+      },
+      message: "Invalid URL format",
+    },
+  },
+  videoLink: {
     type: String,
     required: true,
     validate: {
@@ -50,7 +70,6 @@ const videoSchema = new mongoose.Schema({
   },
   channelName: {
     type: String,
-    // required: true,
     trim: true,
   },
   views: {
@@ -77,7 +96,7 @@ const videoSchema = new mongoose.Schema({
   },
   comments: {
     type: [commentSchema],
-    default: []
+    default: [],
   },
 });
 

@@ -1,13 +1,13 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { Link, useParams } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined } from "@mui/icons-material";
-import AddIcon from '@mui/icons-material/Add';
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import CloseIcon from '@mui/icons-material/Close';
+import axios from 'axios'
 
 const style = {
   position: 'absolute',
@@ -34,11 +34,13 @@ export default function Homeviewer(cat) {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
-        <img
-          src={cat.thumbnail}
-          alt=""
-          className="md:rounded-lg w-full h-44 sm:h-48 object-cover"
-        />
+        <Link to={`/watch?v=${cat._id}`}>
+          <img
+            src={cat.thumbnail}
+            alt=""
+            className="md:rounded-lg w-full h-44 sm:h-48 object-cover"
+          />
+        </Link>
         <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
           <Avatar sx={{ width: 35, height: 35, bgcolor: deepPurple[500] }}>
             N

@@ -8,6 +8,16 @@ export default {
     extend: {
       fontFamily: {
         "roboto": ["Roboto", "serif"]
+      },
+      spacing: {
+        15: '60px',
+        20: '80px',
+        28: '110px',
+      },
+      fontSize: {
+        '3xl': '30px',
+        '4xl': '45px',
+        '5xl': '60px',
       }
     },
   },

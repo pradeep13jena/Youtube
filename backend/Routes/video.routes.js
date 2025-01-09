@@ -1,7 +1,9 @@
-import { deleteVideo, videosDisplay } from "../Controller/video.controller.js"
+import { deleteVideo, oneVideo, videosDisplay } from "../Controller/video.controller.js"
 import { verifyToken } from "../Middlewares/verifyToken.js"
 
 export const videoRoutes = (app) => { 
-  app.get('/videos', verifyToken, videosDisplay)
-  app.delete('/videos', verifyToken, deleteVideo)
+  app.get('/videos', videosDisplay)
+  app.get('/videos/:id', oneVideo)
+  app.delete('/videos', deleteVideo)
+
 }

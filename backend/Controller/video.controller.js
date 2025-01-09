@@ -14,6 +14,20 @@ export const videosDisplay = async (req, res) => {
   }
 };
 
+export const oneVideo = async (req, res) => {
+  const {id} = req.params
+  try {
+    const video = await videoModel.findOne({_id: id})
+    if(!video){
+      return res.status(404).json({message: `No video with ${_id} found`})
+    }
+
+    res.status(200).json(video)
+  } catch (error) {
+    res.status(500).json({ message: "An unexpected error occurred", details: error.message })
+  }
+}
+
 export const uploadVideo = async (req, res) => {
   const { title, thumbnail, description, categories } = req.body;
   const { channel } = req.params;

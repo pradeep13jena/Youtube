@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import Homeviewer from './Homeviewer'
 import Playlistcards from './PlaylistCards'
@@ -6,44 +6,8 @@ import PlaylistRender from './PlaylistRender'
 
 export default function Playlist() {
   const {playlist} = useParams()
-  const videos = [
-    
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Learn JavaScript in 10 Minutes",
-      channelName: "CodeAcademy",
-      views: "1.5M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Master ReactJS in 30 Days",
-      channelName: "ReactMastery",
-      views: "2.1M",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    },
-    {
-      thumbnail:
-        "https://i.pinimg.com/736x/7f/74/10/7f7410146fe75b317b34e111f42da75f.jpg",
-      title: "Building a YouTube Clone: Full Stack Guide",
-      channelName: "CodeWithMe",
-      views: "950K",
-    }
-  ]
+  const [user, setUser] = useState({})
+  const [videos, setVideos] = useState([])
 
   return (
     <div className='sm:px-5 my-5 w-full'>

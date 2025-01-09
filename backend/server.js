@@ -1,11 +1,16 @@
 import mongoose from "mongoose";
 import express from "express";
+import cors from "cors"
 import { videoRoutes } from "./Routes/video.routes.js";
 import { registration } from "./Routes/user.routes.js";
 import { channel } from "./Routes/channel.routes.js";
 
 const port = 5000
 const app = express()
+
+app.use(cors({
+  origin: "http://localhost:5173"
+}))
 
 app.use(express.json());
 
