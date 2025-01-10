@@ -48,13 +48,12 @@ export default function Account() {
   const [user, setUser] = useState({})
 
   useEffect(() => {
-    const username = 'Praveen upadhyay'
+    const username = 'Ashish chanchalani'
 
     const fetchUserData = async () => {
       try {
         const response = await axios.post("http://localhost:5000/user", {username});
         setUser(response.data);
-        console.log(response.data.playlists)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -69,7 +68,7 @@ export default function Account() {
       {/* Profile */}
       <div className='flex gap-4 mt-10 mb-10 md:mb-5'>
         <img
-          src={user.avatar}  // Assuming user.avatar is the image URL
+          src={user.avatar}
           alt="User Avatar"
           className="cursor-pointer w-15 h-15 text-3xl bg-orange-500 rounded-full object-cover sm:w-20 sm:h-20 sm:text-4xl md:w-32 md:h-32 md:text-5xl"
           onClick={() => SetisAccount(!Account)}
@@ -188,14 +187,16 @@ export default function Account() {
         <div className='flex items-center justify-between mb-3'>
           <h1 className='font-roboto text-xl font-medium'>Watch Later</h1>
           <div className='flex items-center gap-3'>
-          <p className={`py-2 px-4 border-2 rounded-full ${user && user.playlists && user.playlists[0].length > 0 ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-not-allowed bg-gray-300'}  `}>View all</p>
+            <Link to={'/playlist/Watch later'}>
+              <p className={`py-2 px-4 border-2 rounded-full ${user && user.playlists && user.playlists[1].videos.length > 0 ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-not-allowed bg-gray-300'}  `}>View all</p>
+            </Link>
           </div>
         </div> 
         {/* Cards */}
         <div className='flex gap-4 overflow-x-auto p-3 channel-list'>
-        {user && user.playlists && user.playlists[0].length > 0 ? 
+        {user && user.playlists && user.playlists[1].videos.length > 0 ? 
           (user.playlists[1].videos.map((cat, index) => (
-            <PlaylistCards key={index} thumbnail={cat.thumbnail} title={cat.title} views={cat.views} channelName={cat.channelName}/>
+            <PlaylistCards key={cat._id} _id={cat._id} thumbnail={cat.thumbnail} title={cat.title} views={cat.views} channelName={cat.channelName}/>
           ))) : (
             <div className="flex-shrink-0 w-60">
                 <img
@@ -215,15 +216,15 @@ export default function Account() {
           <h1 className='font-roboto text-xl font-medium'>Liked videos</h1>
           <div className='flex items-center gap-3'>
             <Link to={'/playlist/Liked videos'}>
-              <p className={`py-2 px-4 border-2 rounded-full ${user && user.playlists && user.playlists[0].length > 0 ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-not-allowed bg-gray-300'}  `}>View all</p>
+              <p className={`py-2 px-4 border-2 rounded-full ${user && user.playlists && user.playlists[0].videos.length > 0 ? 'hover:bg-gray-100 cursor-pointer' : 'cursor-not-allowed bg-gray-300'}  `}>View all</p>
             </Link>
           </div>
         </div>
         {/* Cards */}
         <div className='flex gap-4 overflow-x-auto p-3 channel-list justify-centers sm:justify-start'>
-          {user && user.playlists && user.playlists[0].length > 0 ? 
+          {user && user.playlists && user.playlists[0].videos.length > 0 ? 
           (user.playlists[0].videos.map((cat, index) => (
-            <PlaylistCards key={index} thumbnail={cat.thumbnail} title={cat.title} views={cat.views} channelName={cat.channelName}/>
+            <PlaylistCards key={cat._id} _id={cat._id} thumbnail={cat.thumbnail} title={cat.title} views={cat.views} channelName={cat.channelName}/>
           ))) : (
             <div className="flex-shrink-0 w-60">
                 <img

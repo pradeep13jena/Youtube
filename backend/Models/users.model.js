@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 // Playlist Schema
 const playlistSchema = new mongoose.Schema({
@@ -7,10 +7,11 @@ const playlistSchema = new mongoose.Schema({
     required: true
   },
   videos: {
-    type: [String], // Array of video IDs or URLs
-    default: []     // Default is an empty array
+    type: [Schema.Types.ObjectId],
+    default: []
   }
 });
+
 
 const userSchema = new mongoose.Schema({
   username: {

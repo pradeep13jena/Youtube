@@ -7,7 +7,6 @@ import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlin
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
-import axios from 'axios'
 
 const style = {
   position: 'absolute',
@@ -22,6 +21,16 @@ const style = {
   outline: 0,
 };
 
+function formatNumber(num) {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+  } else if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return num.toString();
+}
 
 const playlist = ["Top Hits 2025", "Relaxing Vibe", "Liked videos", 'Watch later']
 
@@ -42,15 +51,17 @@ export default function Homeviewer(cat) {
           />
         </Link>
         <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
-          <Avatar sx={{ width: 35, height: 35, bgcolor: deepPurple[500] }}>
-            N
-          </Avatar>
+          <Link to={`/channel/${cat.channelDetails.channelName}`}>
+            <img src={cat && cat.channelDetails && cat.channelDetails.channelLogo} className="w-9 h-9 rounded-full" alt="" />
+          </Link>
           <div className="flex flex-col gap-[.8px] flex-1">
             <h1 className="text-base font-semibold">{cat.title}</h1>
             <div className="flex md:flex-col items-center md:items-start">
-              <p className="text-gray-700 text-[11px] md:text-[13px]">
-                {cat.channelName}
-              </p>
+              <Link to={`/channel/${cat.channelDetails.channelName}`}>
+                <p className="text-gray-700 text-[11px] md:text-[13px]">
+                  {cat.channelName}
+                </p>
+              </Link>
               {window.screen.availWidth < 640 ? (
                 <p className="text-[10px] px-1 text-gray-500 md:hidden">
                   &#x2022;
@@ -60,11 +71,7 @@ export default function Homeviewer(cat) {
               )}
               <div className="flex items-end">
                 <p className=" text-gray-700 text-[11px] md:text-[13px]">
-                  {cat.views} views{" "}
-                </p>
-                <p className="text-[10px] px-1 text-gray-500">&#x2022;</p>
-                <p className=" text-gray-700 text-[11px] md:text-[13px]">
-                  {cat.views} views{" "}
+                  {formatNumber(cat.views)} views{" "}
                 </p>
               </div>
             </div>

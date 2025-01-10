@@ -2,6 +2,53 @@ import mongoose from "mongoose";
 import channelModel from "../Models/channel.model.js";
 import userModel from "../Models/users.model.js";
 
+const getVideoDetails = async (channelName) => {
+  try {
+    const channelExpand = await mongoose.connection.db
+      .collection("channels")
+      .aggregate([
+        // Match the specific channel by channelName
+        {
+          $match: { "channelName": channelName }
+        },
+
+        // Lookup to get video details by matching the ObjectIds in the "videos" array
+        {
+          $lookup: {
+            from: "videos",  // The collection to join with
+            localField: "videos",  // The array of ObjectIds in the channel object
+            foreignField: "_id",  // The field to match in the "videos" collection
+            as: "videoDetails"  // The new field to store matched video details
+          }
+        },
+
+        // Project to format the output and include the necessary fields
+        {
+          $project: {
+            channelName: 1,
+            owner: 1,
+            description: 1,
+            channelBanner: 1,
+            channelLogo: 1,
+            subscribers: 1,
+            videos: 1,  // Keep the original video ObjectIds
+            videoDetails: 1  // Include the matched video details
+          }
+        }
+      ]).toArray(); // Ensure you convert the cursor to an array
+
+    // Check if result is empty
+    if (channelExpand.length === 0) {
+      throw new Error("Channel not found or no video details available.");
+    }
+
+    return channelExpand[0]; // Return the first (and only) result since channelName is unique
+
+  } catch (error) {
+    throw new Error(`Failed to fetch video details: ${error.message}`);
+  }
+}
+
 export const createChannel = async (req, res) => {
   const { channelName, description, channelBanner } = req.body;
 
@@ -56,9 +103,7 @@ export const viewChannel = async (req, res) => {
       return res.status(400).json({ message: "Invalid channel name provided" });
     }
 
-    const checkChannel = await channelModel.findOne({
-      channelName: channel.toLowerCase(),
-    });
+    const checkChannel = await getVideoDetails(channel);
 
     if (!checkChannel) {
       return res.status(404).json({ message: "No such channel" });

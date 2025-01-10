@@ -20,6 +20,17 @@ const style1 = {
   outline: 0,
 };
 
+function formatNumber(num) {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+  } else if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return num.toString();
+}
+
 export default function ChannelOwnerRender({cat}) {
 
   const [openModal, setOpenModal] = useState(false)
@@ -30,10 +41,10 @@ export default function ChannelOwnerRender({cat}) {
   return (
     <div className="flex flex-col">
       <div className="flex md:flex-col sm:gap-[1px] transform transition-transform duration-300">
-        <Link to={'/videos/watch'}>
+        <Link to={`/watch?v=${cat._id }`}>
           <img
             src={cat.thumbnail}
-            alt=""
+            alt={cat.title}
             className="md:rounded-lg md:w-full h-24 sm:h-40 md:h-48 object-cover"
           />
         </Link>
@@ -43,17 +54,7 @@ export default function ChannelOwnerRender({cat}) {
             <div className="flex md:flex-col items-center justify-between md:items-start">
               <div className="flex-col sm:flex items-end">
                 <p className=" text-gray-700 text-[10px] md:text-[13px]">
-                  {cat.views} views{" "}
-                </p>
-                {window.screen.availWidth < 640 ? (
-                  <p className="text-[10px] px-1 text-gray-500 hidden">
-                    &#x2022;
-                  </p>
-                ) : (
-                  ""
-                )}
-                <p className=" text-gray-700 text-[10px] md:text-[13px]">
-                  {cat.views} views{" "}  
+                  {formatNumber(cat.views)} views{" "}
                 </p>
               </div>
             </div>

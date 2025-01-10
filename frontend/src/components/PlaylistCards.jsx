@@ -2,10 +2,21 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import MoreVertIcon from '@mui/icons-material/MoreVert';
 
-export default function PlaylistCards({thumbnail, title, channelName, views}) {
+function formatNumber(num) {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+  } else if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return num.toString();
+}
+
+export default function PlaylistCards({_id, thumbnail, title, channelName, views}) {
   return (
       <div className="flex-shrink-0 w-60">
-        <Link to={'/videos/watch'}>
+        <Link to={`/watch?v=${_id}`}>
           <img
             src={thumbnail}
             alt={title}
@@ -18,7 +29,7 @@ export default function PlaylistCards({thumbnail, title, channelName, views}) {
               {title}
             </h1>
             <p className="text-sm text-gray-700">{channelName}</p>
-            <p className="text-sm text-gray-700">{views} views</p>  
+            <p className="text-sm text-gray-700">{formatNumber(views)} views</p>  
           </div>
         </div>
         </div>

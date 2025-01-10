@@ -52,8 +52,8 @@ export default function Watch() {
     axios.get(`http://localhost:5000/videos/${_id}`)
     .then((data) => {
       setVideos(data.data)
+      console.log(data.data)
       setComments(data.data.comments)
-      console.log(data.data.comments[0].username)
     })
     .catch((err) => {
       console.log(err)
@@ -97,9 +97,10 @@ export default function Watch() {
                 {/* CHannel Avatar */}
                 <div className='justify-between lg:justify-start flex items-center gap-3'>
                   <div>
-                    <Avatar sx={{bgcolor: deepPurple[500], width: { xs: 25, sm: 30, md: 40 }, height: { xs: 25, sm: 30, md: 40 } }}>
-                      P
-                    </Avatar>
+                  <img
+                    src={videos && videos.channelDetails && videos.channelDetails.channelLogo}
+                    className='w-9 h-9 rounded-full'
+                  />
                   </div>
                   <div className='flex flex-col'>
                     <h1 className='font-medium font-roboto'>{videos.channelName}</h1>
@@ -212,12 +213,11 @@ export default function Watch() {
                   comments.map((comment, index) => (
                     <div key={index} className="flex items-center justify-between gap-3 mt-4">
                        <div className='flex justify-between gap-2 items-start'>
-                        {/*
                         <img
                           src="https://via.placeholder.com/40"
                           alt="User avatar"
                           className="w-10 h-10 rounded-full"
-                        />*/}
+                        />*
                         <div> 
                           <p className="font-medium text-gray-700">{comment.username}</p>
                           <p className="text-gray-800">{comment.text}</p>

@@ -88,7 +88,7 @@ export default function Home() {
       <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-122.2px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         {videos.map((cat, index) => {
           return (
-            <Homeviewer key={cat._id} _id={cat._id} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
+            <Homeviewer key={cat._id} _id={cat._id} channelDetails={cat.channelDetails} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
           );
         })}
       </div>

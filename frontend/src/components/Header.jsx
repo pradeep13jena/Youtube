@@ -18,7 +18,7 @@ export default function Header(){
   }
 
   useEffect(() => {
-    const username = 'Shivanshu pandey'
+    const username = 'Ashish chanchalani'
 
     axios.post('http://localhost:5000/user', { username })
     .then((data) => {
@@ -54,11 +54,11 @@ export default function Header(){
       </div>
       <div className='relative hidden md:block z-40 '>
       <img src={user.avatar} alt="User Avatar" className="cursor-pointer" onClick={() => SetisAccount(!isAccount)} style={{
-          width: '42px',  // Similar to Avatar size
-          height: '42px', // Similar to Avatar size
-          borderRadius: '50%', // To make it circular like Avatar
-          backgroundColor: '#FF5722', // deepOrange[500] background color
-          fontSize: '29px', // Style for font size if you have text or icon
+          width: '42px', 
+          height: '42px',
+          borderRadius: '50%',
+          backgroundColor: '#FF5722', 
+          fontSize: '29px', 
         }}/>
         <div className={` ${isAccount ? "" : 'hidden'} bg-white w-36 absolute shadow-[0px_8px_24px_0px_rgba(149,_157,_165,_0.2)] rounded-sm right-2 top-9 px-2 py-3`}>
           <ul className='flex flex-col gap-3 justify-center items-start font-roboto'>

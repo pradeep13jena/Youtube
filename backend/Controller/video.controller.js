@@ -1,10 +1,128 @@
 import mongoose from "mongoose";
 import getFormattedDateTime from "../utils/getDateandTIme.js";
 import videoModel from "../Models/videos.model.js";
+import {ObjectId} from 'mongodb'
+
+
+const getChannelDetails = async (id) => {
+
+try{
+  const userDetails = await mongoose.connection.db
+  .collection("videos")
+  .aggregate([
+    {
+      $match: { _id: new ObjectId(id) }
+    },
+    {
+      $lookup: {
+        from: 'channels',
+        localField: 'channelName',
+        foreignField: 'channelName',
+        as: 'channelDetails'
+      }
+    },
+    {
+      $unwind: {
+        path: '$channelDetails',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        thumbnail: 1,
+        videoLink: 1,
+        description: 1,
+        categories: 1,
+        channelName: 1,
+        views: 1,
+        likes: 1,
+        dislikes: 1,
+        uploadDate: 1,
+        comments: 1,
+        channelDetails: {
+          _id: 1,
+          description: 1,
+          channelBanner: 1,
+          channelLogo: 1,
+          subscribers: 1,
+          videos: 1,
+          channelName: 1,
+          owner: 1
+        }
+      }
+    }
+  ])
+  .toArray();  // Using toArray to fetch results
+
+  return userDetails;
+
+} catch (error) {
+  throw new Error(`Failed to fetch user details: ${error.message}`);
+};
+
+}
+
+const getEntireVideos = async () => {
+
+try{
+  const userDetails = await mongoose.connection.db
+  .collection("videos")
+  .aggregate([
+    {
+      $lookup: {
+        from: 'channels',
+        localField: 'channelName',
+        foreignField: 'channelName',
+        as: 'channelDetails'
+      }
+    },
+    {
+      $unwind: {
+        path: '$channelDetails',
+        preserveNullAndEmptyArrays: true
+      }
+    },
+    {
+      $project: {
+        _id: 1,
+        title: 1,
+        thumbnail: 1,
+        videoLink: 1,
+        description: 1,
+        categories: 1,
+        channelName: 1,
+        views: 1,
+        likes: 1,
+        dislikes: 1,
+        uploadDate: 1,
+        comments: 1,
+        channelDetails: {
+          _id: 1,
+          description: 1,
+          channelBanner: 1,
+          channelLogo: 1,
+          subscribers: 1,
+          videos: 1,
+          channelName: 1,
+          owner: 1
+        }
+      }
+    }
+  ])
+  .toArray();  // Using toArray to fetch results
+
+  return userDetails;
+
+} catch (error) {
+  throw new Error(`Failed to fetch user details: ${error.message}`);
+}
+}
 
 export const videosDisplay = async (req, res) => {
   try {
-    const videos = await videoModel.find({});
+    const videos = await getEntireVideos();
     if (!videos || videos.length === 0) {
       return res.status(404).json({ message: "No videos found" });
     }
@@ -15,18 +133,18 @@ export const videosDisplay = async (req, res) => {
 };
 
 export const oneVideo = async (req, res) => {
-  const {id} = req.params
+  const { id } = req.params;  // Use 'id' from the route parameters
   try {
-    const video = await videoModel.findOne({_id: id})
-    if(!video){
-      return res.status(404).json({message: `No video with ${_id} found`})
+    const video = await getChannelDetails(id);  // Pass 'id' to getChannelDetails
+    if (!video || video.length === 0) {  // Check if video is found
+      return res.status(404).json({ message: `No video with ID ${id} found` });
     }
 
-    res.status(200).json(video)
+    res.status(200).json(video[0]);  // Return the first video result
   } catch (error) {
-    res.status(500).json({ message: "An unexpected error occurred", details: error.message })
+    res.status(500).json({ message: "An unexpected error occurred", details: error.message });
   }
-}
+};
 
 export const uploadVideo = async (req, res) => {
   const { title, thumbnail, description, categories } = req.body;

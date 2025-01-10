@@ -47,7 +47,6 @@ export default function Sidebar() {
       try {
         const response = await axios.post("http://localhost:5000/user", {username});
         setUser(response.data);
-        console.log(response.data)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -76,13 +75,16 @@ export default function Sidebar() {
       <div className={` ${isToggle ? '' : 'hidden'} py-3 w-full flex flex-col gap-2`}>
         <h1 className='font-roboto font-medium text-[1.1rem] px-4 '>Subscriptions</h1>
         <ul className='flex flex-col gap-1'>
-          {user && user.subscriptions && user.subscriptions.length > 0 ? 
-          (user.subscriptions.map((cat, index) => {
+          {user && user.subscriptionDetails
+           && user.subscriptionDetails
+          .length > 0 ? 
+          (user.subscriptionDetails
+          .map((cat, index) => {
             return(
-              <Link key={index} to={`/channel/${cat.name}`}>
+              <Link key={index} to={`/channel/${cat.channelName}`}>
                 <li className='flex gap-3 items-center cursor-pointer hover:bg-gray-200 px-4 py-2 rounded-md'>
-                  <Avatar sx={{width: 25, height: 25, bgcolor: deepOrange[500]}}>O</Avatar>
-                  <p className='truncate text-sm'>{cat.name}</p>
+                  <img src={cat.channelLogo} alt="" className='w-9 h-9 rounded-full'/>
+                  <p className='truncate text-sm'>{cat.channelName}</p>
                 </li>
               </Link>
           )})) : (

@@ -3,7 +3,7 @@ import App from './src/components/App'
 import "./src/styles/index.css"
 import { createBrowserRouter, RouterProvider } from 'react-router-dom'
 import Playlist from './src/components/Playlist'
-import Channel from './src/components/channel'
+import Channel from './src/components/Channel'
 import Home from './src/components/Home'
 import Watch from './src/components/Watch'
 import { store } from './src/features/store'
