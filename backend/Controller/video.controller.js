@@ -1,8 +1,7 @@
 import mongoose from "mongoose";
-import getFormattedDateTime from "../utils/getDateandTIme.js";
 import videoModel from "../Models/videos.model.js";
 import {ObjectId} from 'mongodb'
-
+import channelModel from "../Models/channel.model.js";
 
 const getChannelDetails = async (id) => {
 
@@ -147,17 +146,18 @@ export const oneVideo = async (req, res) => {
 };
 
 export const uploadVideo = async (req, res) => {
-  const { title, thumbnail, description, categories } = req.body;
+  const { title, thumbnail, videoLink, description, categories } = req.body;
   const { channel } = req.params;
 
-  if (!title || !thumbnail || !description || categories === undefined) {
-    return res.status(400).json({ error: "Title, thumbnail, description, and categories are required" });
+  if (!title || !thumbnail || !videoLink || !description || categories === undefined) {
+    return res.status(400).json({ error: "Title, thumbnail, videoLink, description, and categories are required" });
   }
 
   if (
     typeof title !== "string" ||
     typeof thumbnail !== "string" ||
     typeof description !== "string" ||
+    typeof videoLink !== "string" ||
     (typeof categories !== "string" && !Array.isArray(categories))
   ) {
     return res.status(400).json({
@@ -183,11 +183,12 @@ export const uploadVideo = async (req, res) => {
 
     const newVideo = new videoModel({
       title: title.trim(),
+      videoLink: videoLink.trim(),
       thumbnail: thumbnail.trim(),
       description: description.trim(),
       channelName: channel.toLowerCase(),
       categories: formattedCategories,
-      uploadDate: getFormattedDateTime(),
+      uploadDate: new Date(),
     });
 
     await newVideo.save();
@@ -213,5 +214,71 @@ export const uploadVideo = async (req, res) => {
   }
 };
 
+export const updateVideo = async (req, res) => {
+  const { title, thumbnail, videoLink, description, categories } = req.body;
+  const { videoId } = req.params; // Assuming the videoId is provided in the URL params
+
+  try {
+    // Check if at least one field is provided to update
+    if (!title && !thumbnail && !videoLink && !description && !categories) {
+      return res.status(400).json({ message: 'No data present to update.' });
+    }
+
+    // Find the video by videoId
+    const video = await videoModel.findById(videoId);
+
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found.' });
+    }
+
+    // Update the fields that are provided
+    if (title) video.title = title;
+    if (thumbnail) video.thumbnail = thumbnail;
+    if (videoLink) video.videoLink = videoLink;
+    if (description) video.description = description;
+    if (categories) video.categories = categories;
+
+    // Save the updated video
+    await video.save();
+
+    // Send a success response with the updated video data
+    res.status(200).json({ message: 'Video updated successfully.', video });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: 'An error occurred while updating the video.', error });
+  }
+};
+
+
 export const deleteVideo = async (req, res) => {
-}
+  try {
+    const { channel, id } = req.params;
+
+    // Find and delete the video from the videoModel
+    const video = await videoModel.findOneAndDelete({ _id: id });
+    
+    if (!video) {
+      return res.status(404).json({ message: 'Video not found' });
+    }
+
+    // Find the channel related to the video and remove the video from the video array
+    const channelExists = await channelModel.findOneAndUpdate(
+      { channelName: channel },  // Ensure `channelName` is correct and case-sensitive
+      { $pull: { videos: new Object(id) } }, // Directly pull the ObjectId from the `videos` array
+      { new: true } // Return the updated document
+    );
+
+    // If the channel exists and the video was removed
+    if (channelExists) {
+      return res.status(200).json({ message: 'Video deleted and removed from channel successfully', updatedChannel: channelExists });
+    }
+
+    // If the channel is not found or the video ID was not removed from the channel
+    return res.status(404).json({ message: 'Channel not found or video not linked to channel' });
+
+  } catch (error) {
+    console.error('Error deleting video:', error); // Log error for debugging purposes
+    res.status(500).json({ message: 'Server error', error: error.message });
+  }
+};

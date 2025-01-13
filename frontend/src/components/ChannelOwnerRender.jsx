@@ -6,6 +6,9 @@ import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
 import CloseIcon from '@mui/icons-material/Close';
 import { Link } from 'react-router-dom';
+import axios from 'axios';
+import { useSelector } from "react-redux";
+import { selectAuth } from "../features/tokenSlice";
 
 const style1 = {
   position: 'absolute',
@@ -32,11 +35,95 @@ function formatNumber(num) {
 }
 
 export default function ChannelOwnerRender({cat}) {
-
+  const {token} = useSelector(selectAuth)
   const [openModal, setOpenModal] = useState(false)
-  const [editVideo, seteditVideos] = useState(false)
-  const handleeditVideo = () => seteditVideos(true);
-  const handleCloseeditVideo = () => seteditVideos(false);
+
+    const [Addvideo, setAddvideo] = useState(false)
+    const handleAddvideo = () => setAddvideo(true);
+    const handleCloseAddvideo = () => setAddvideo(false);
+  
+
+  const [videoErrors, setVideoError] = useState({})
+  const [videoValues, setVideoValues] = useState({
+    videoTitle: "",
+    videoDescription: "",
+    videoURL: "",
+    videoThumbnail: "",
+    videoGenre: ""
+  })
+
+  function handleVideoChange(e){
+    const {name, value} = e.target
+    setVideoValues({ ...videoValues, [name]: value})
+  }
+
+  function handleVideoValidation(values) {
+    const errors = {};
+    const urlReg = /^(http|https):\/\/[^\s]+$/;
+    const titleReg = /.+/; // For video title (alphanumeric + spaces)
+    const genreReg = /^[A-Za-z\s,]+$/; // For video genre (alphabets + spaces + commas)
+  
+    // Video Title Validation
+    if (values.videoTitle && !titleReg.test(values.videoTitle)) {
+      errors.videoTitle = "Video Title must only contain alphanumeric characters and spaces!";
+    }
+  
+    // Video Description Validation (Optional)
+    if (values.videoDescription && values.videoDescription.trim() === "") {
+      errors.videoDescription = "Video Description cannot be empty if provided!";
+    }
+  
+    // Video URL Validation (Optional)
+    if (values.videoURL && !urlReg.test(values.videoURL)) {
+      errors.videoURL = "Video URL must be a valid URL starting with http/https!";
+    }
+  
+    // Video Thumbnail Validation (Optional)
+    if (values.videoThumbnail && !urlReg.test(values.videoThumbnail)) {
+      errors.videoThumbnail = "Thumbnail URL must be a valid URL starting with http/https!";
+    }
+  
+    // Video Genre Validation (Optional)
+    if (values.videoGenre && !genreReg.test(values.videoGenre)) {
+      errors.videoGenre = "Video Genre must only contain alphabets, spaces, and commas!";
+    }
+  
+    setVideoError(errors);
+    return Object.keys(errors).length === 0;
+  }
+  
+
+  function handleVideoSubmit(e){
+    e.preventDefault()
+    const isValid = handleVideoValidation(videoValues);
+    if(isValid){
+      const { videoTitle: title, videoDescription: description, videoURL: videoLink, videoThumbnail: thumbnail, videoGenre: categories } = videoValues;
+      const formData = { title, description, videoLink, thumbnail, categories };
+      axios.put(`http://localhost:5000/videos/${cat._id}`,
+        formData,
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        }
+      )
+      .then(data => alert(data.data.message))
+      .catch(error => alert(error.response.data.message))
+    }
+  }
+
+  function deleteVideo(videoId){
+    axios.put(`http://localhost:5000/videos/${cat.channelName}/${cat._id}`, 
+      {},
+      {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      }
+    )
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  }
 
   return (
     <div className="flex flex-col">
@@ -70,31 +157,46 @@ export default function ChannelOwnerRender({cat}) {
                 openModal ? "fixed" : "hidden"
               } `}
             >
-              <div className="py-1">
+              <div className="py-1 z-50">
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
                   <ModeEditOutlineIcon />
-                  <h1  onClick={handleeditVideo} className="text-base font-roboto ">
+                  <h1  onClick={handleAddvideo} className="text-base font-roboto ">
                     Edit video
                   </h1>
                   <Modal
-                      open={editVideo}
-                      onClose={handleCloseeditVideo}
+                      open={Addvideo}
+                      onClose={handleCloseAddvideo}
                       aria-labelledby="modal-modal-title"
                       aria-describedby="modal-modal-description"
                     >
                     <Box sx={style1}>
                       <div className=' '>
                         <div className='flex mb-8 justify-between items-center'>
-                          <h1 className='text-base md:text-2xl font-roboto font-semibold'>Add Video</h1>
-                          <CloseIcon onClick={() => seteditVideos(false)} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
+                          <h1 className='text-base md:text-2xl font-roboto font-semibold'>Edit Video</h1>
+                          <CloseIcon onClick={() => setAddvideo(false)} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
                         </div>
-                        <form action="" onSubmit={(event) => event.preventDefault()} className='flex flex-col gap-5'>
-                            <input className='px-3 py-2 font-roboto text-base border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video title' name="channelName" />
-                            <input className='px-3 py-2 font-roboto text-base border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video Description' name="channelDescp" />
-                            <input className='px-3 py-2 font-roboto text-base border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video URL' name="channelBanner" />
-                            <input className='px-3 py-2 font-roboto text-base border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video thumbnail Logo' name="channelLogo" />
-                            <input className='px-3 py-2 font-roboto text-base border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video Category' name="channelLogo" />
-                            <button onClick={() => seteditVideos(false)} className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600' type="submit">Add Video</button>
+                        <form onSubmit={handleVideoSubmit} className='flex flex-col gap-5'>
+                          <div className='w-full'>
+                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video title' value={videoValues.videoTitle} name="videoTitle" onChange={handleVideoChange}/>
+                            <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoTitle}</p>
+                          </div>
+                          <div className='w-full'>
+                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video thumbnail'value={videoValues.videoThumbnail} name="videoThumbnail" onChange={handleVideoChange}/>
+                            <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoThumbnail}</p>
+                          </div>
+                          <div className='w-full'>
+                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video URL' value={videoValues.videoURL} name="videoURL" onChange={handleVideoChange}/>
+                            <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoURL}</p>
+                          </div>
+                          <div className='w-full'>
+                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video genre' value={videoValues.videoGenre} name="videoGenre" onChange={handleVideoChange}/>
+                            <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoGenre}</p>
+                          </div>
+                          <div className='w-full'>
+                            <textarea className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2 resize-none'  placeholder='Video Description'  value={videoValues.videoDescription} name="videoDescription" onChange={handleVideoChange}></textarea>
+                            <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoDescription}</p>
+                          </div>
+                          <button type="submit" className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>update Video</button>
                         </form>
                       </div>
                     </Box>
@@ -102,10 +204,9 @@ export default function ChannelOwnerRender({cat}) {
                 </div>
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
                   <DeleteOutlineIcon />
-                  <h1 className="text-base font-roboto ">
+                  <h1 className="text-base font-roboto " onClick={() => deleteVideo(cat._id)}>
                     Delete video
                   </h1>
-                  
                 </div>
               </div>
             </div>

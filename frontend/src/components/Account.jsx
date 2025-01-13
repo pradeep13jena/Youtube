@@ -1,14 +1,18 @@
-import React,{useEffect} from 'react'
+import React,{ useState, useEffect } from 'react'
 import AddIcon from '@mui/icons-material/Add';
-import { Avatar } from '@mui/material';
-import { deepOrange } from '@mui/material/colors';
+import { useSelector } from 'react-redux';
+import { selectAuth } from "../features/tokenSlice.js";
 import PlaylistCards from './PlaylistCards';
-import { Link } from 'react-router-dom';
-import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import Box from '@mui/material/Box';
+import { Link } from 'react-router-dom';
+import Popper from '@mui/material/Popper';
 import CloseIcon from '@mui/icons-material/Close';
+import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import axios from 'axios';
-import { useState } from 'react';
+import MenuIcon from '@mui/icons-material/Menu';
+import MoreVertIcon from '@mui/icons-material/MoreVert';
+
 
 const style = {
   position: 'absolute',
@@ -46,27 +50,186 @@ export default function Account() {
   const handleClose1 = () => setOpen1(false);
 
   const [user, setUser] = useState({})
+  const { token } = useSelector(selectAuth)
+
+  const [anchorEl, setAnchorEl] = useState(null);
+  const [popprOpen, setPoppropen] = useState(false)
+
+  const handleClick = (event) => {
+    setAnchorEl(anchorEl ? null : event.currentTarget);
+    setPoppropen((prev) => !prev)
+  };
+
+  const id = popprOpen ? 'simple-popper' : undefined;
 
   useEffect(() => {
-    const username = 'Ashish chanchalani'
-
+    
     const fetchUserData = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/user", {username});
+        const response = await axios.post("http://localhost:5000/user", 
+          {},
+          {
+            headers: {
+              Authorization: `JWT ${token}`,
+            }
+          }
+      );
         setUser(response.data);
+        console.log(response.data)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserData()
-  }, [])
+    if (token) {
+      fetchUserData()
+    }
+  }, [token])
+
+  // Delete Playlist
+
+  function deletePlaylist(playlist){
+    axios.post(`http://localhost:5000/playlist/${playlist}`,
+      {},
+      {
+        headers: {
+          Authorization: `JWT ${token}`,
+        }
+      }
+    )
+    .then(data => setPoppropen(false))
+  }
+
+  // form validation
+
+  const initialValue = {
+    channelName : "",
+    channelLogo : "",
+    channelBanner : "",
+    channelDescp : ""
+  }
+
+  const initialValue1 = {
+    playlistName : ""
+  }
+
+  const [channelValues, setChannelValues] = useState(initialValue)
+  const [channelError, setChannelError] = useState({})
+
+  const [playlistValues, setPLaylistValues] = useState(initialValue1)
+  const [playlistError, setPlaylistError] = useState({})
+
+  function handleChannelChange(e){
+    const {name, value} = e.target
+    setChannelValues({ ...channelValues, [name]: value})
+  }
+
+  function handlePlaylistChange(e){
+    const {name, value} = e.target
+    setPLaylistValues({ ...playlistValues, [name]: value})
+  }
+
+  function handleChannelValidate(values){
+    const errors = {}
+    const imageReg = /^(http|https):\/\/[^\s]+$/
+    const nameReg = /^[\w\s]{3,15}$/
+    const descReg = /^[\w\s.,!?'"-]{0,200}$/
+
+    if(!values.channelName){
+      errors.channelName = "Channel name is required"
+    } else if (!nameReg.test(values.channelName)){
+      errors.channelName = "Letters, numbers and spaces are allowed and between 2 and 15 characters!"
+    }
+
+    if (!values.channelBanner) {
+      errors.channelBanner = "Channel Banner URL is required.";
+    } else if (!imageReg.test(values.channelBanner)) {
+      errors.channelBanner = "Channel Banner URL must be a valid URL starting with http/https";
+    }
+    
+    if (!values.channelLogo) {
+      errors.channelLogo = "Channel Logo URL is required.";
+    } else if (!imageReg.test(values.channelLogo)) {
+      errors.channelLogo = "Channel Logo URL must be a valid URL starting with http/https";
+    } 
+
+    if (!values.channelDescp) {
+      errors.channelDescp = "Channel description is required";
+    } else if (!descReg.test(values.channelDescp)) {
+      errors.channelDescp = "Description must not be longer than 200 words!";
+    }
+
+    setChannelError(errors)
+    return Object.keys(errors).length === 0;
+  }
+
+  function handlePlaylistValidate(values){
+    const errors = {}
+    const nameReg = /^[\w\s]{3,15}$/
+
+    if(!values.playlistName){
+      errors.playlistName = "Playlist name is required"
+    } else if (!nameReg.test(values.playlistName)){
+      errors.playlistName = "Letters, numbers and spaces are allowed and between 2 and 15 characters!"
+    }
+
+    setPlaylistError(errors)
+    return Object.keys(errors).length === 0;
+  }
+
+  function handleChannelSubmit(e){
+    e.preventDefault()
+    const isValid = handleChannelValidate(channelValues)
+
+    if(isValid){
+      const {channelName, channelLogo, channelBanner, channelDescp: description} = channelValues
+      const formData = {channelName : channelName.toLowerCase(), channelLogo, channelBanner, description}
+      axios.post("http://localhost:5000/channel",
+        formData,
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        }
+      )
+      .then((data) => console.log(data))
+      .catch((error) => console.log(error))
+    }
+  }
+
+  function handlePlaylistSubmit(e){
+    e.preventDefault()
+    const isValid = handlePlaylistValidate(playlistValues)
+    if(isValid){
+      axios.post("http://localhost:5000/playlist",
+      playlistValues,
+      {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      }
+      )
+      .then((data) => alert(data.data.message))
+      .catch((error) => alert(error.response.data.message ))
+    }
+  }
+
 
   return (
+  <>
+    {!token ? (
+      <div className="m-auto">
+        <Link to={"/signin"}>
+            <h1 className='text-base font-roboto font-medium px-3 py-1 bg-gray-100 rounded-full border-[1px] border-black hover:bg-gray-200'>
+              Login / sign up
+            </h1>
+        </Link>
+      </div>
+    ) : (
     <div className='px-3 sm:px-5 w-full flex flex-col gap-10 md:gap-3 md:h-[calc(100vh-59.2px)] overflow-y-auto '>
 
       {/* Profile */}
-      <div className='flex gap-4 mt-10 mb-10 md:mb-5'>
+      <div className='flex gap-4 mt-10 mb-10 md:mb-5 justify-start items-center'>
         <img
           src={user.avatar}
           alt="User Avatar"
@@ -74,9 +237,9 @@ export default function Account() {
           onClick={() => SetisAccount(!Account)}
         />
         <div>
-        <div className='flex-col gap-1'>
-          <p className='font-roboto text-2xl md:text-3xl font-semibold'>{user.username  }</p>
-          <p className='font-roboto'>Joined 06 January 2025</p>
+        <div className='flex-col gap-2'>
+          <p className='font-roboto text-2xl md:text-3xl font-semibold'>{user.name}</p>
+          <p className='font-roboto text-base'>@{user.username}</p>
         </div>
         </div>
       </div>
@@ -87,10 +250,10 @@ export default function Account() {
         <div className='flex items-center justify-between mb-3'>
           <h1 className='font-roboto text-xl font-medium'>Channels</h1>
           <div className='flex items-center gap-3'>
-            <div className="cursor-pointer rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center md:border-2 md:hover:bg-gray-100">
-              <AddIcon onClick={handleOpen}/>
-
-              <Modal
+            <div onClick={handleOpen} className="cursor-pointer rounded-full w-8 h-8 md:w-10 md:h-10 flex items-center justify-center md:border-2 md:hover:bg-gray-100">
+              <AddIcon/>
+            </div>
+            <Modal
                   open={open}
                   onClose={handleClose}
                   aria-labelledby="modal-modal-title"
@@ -100,31 +263,42 @@ export default function Account() {
                   <div className=' '>
                     <div className='flex mb-8 justify-between items-center'>
                       <h1 className='text-2xl font-roboto font-semibold'>Channel details</h1>
-                      <CloseIcon onClick={() => setOpen(false)} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
+                      <CloseIcon onClick={() => {setOpen(false);setChannelError({});setChannelValues({})}} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
                     </div>
-                    <form action="" onSubmit={(event) => event.preventDefault()} className='flex flex-col gap-5'>
-                      <input className='px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel name' name="channelName" />
-                      <input className='px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel Description' name="channelDescp" />
-                      <input className='px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel Banner' name="channelBanner" />
-                      <input className='px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel Logo' name="channelLogo" />
-                      <button onClick={() => setOpen(false)} className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600' type="submit">Create channel</button>
+                    <form onSubmit={handleChannelSubmit} className='flex flex-col gap-5'>
+                      <div className='w-full'>
+                        <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel name' value={channelValues.channelName} name="channelName" onChange={handleChannelChange}/>
+                        <p className='text-red-500 mt-0 text-sm'>{channelError.channelName}</p>
+                      </div>
+                      <div className='w-full'>
+                        <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel Banner'value={channelValues.channelBanner} name="channelBanner" onChange={handleChannelChange}/>
+                        <p className='text-red-500 mt-0 text-sm'>{channelError.channelBanner}</p>
+                      </div>
+                      <div className='w-full'>
+                        <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Channel Logo' value={channelValues.channelLogo} name="channelLogo" onChange={handleChannelChange}/>
+                        <p className='text-red-500 mt-0 text-sm'>{channelError.channelLogo}</p>
+                      </div>
+                      <div className='w-full'>
+                        <textarea className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2 resize-none'  placeholder='Channel Description'  value={channelValues.channelDescp} name="channelDescp" onChange={handleChannelChange}></textarea>
+                        <p className='text-red-500 mt-0 text-sm'>{channelError.channelDescp}</p>
+                      </div>
+                      <button type="submit" className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Create channel</button>
                     </form>
                   </div>
                 </Box>
               </Modal>
-            </div>
             <Link to={'/feed/channels'}><p className='py-2 px-4 border-2 rounded-full cursor-pointer hover:bg-gray-100'>View all</p></Link>
           </div>
         </div>
         {/* cards */}
         <div className="flex gap-4 overflow-x-auto p-3 channel-list">
           {user && user.channelDetails && user.channelDetails.map((cat, index) => (
-            <Link  key={index} to={`/owner/${cat.channelName}`}>
-              <div className="flex-shrink-0 w-60">
+            <Link key={index} to={`/owner/${cat.channelName}`}>
+              <div className="flex-shrink-0 w-40 flex flex-col justify-center items-center gap-1">
                 <img
                   src={cat.channelLogo}
                   alt={cat.channelName}
-                  className="rounded-md w-36 h-36 object-cover hover:opacity-70"
+                  className="rounded-md object-cover hover:opacity-70"
                 />
                 <p className="text-sm font-medium mt-2">{cat.channelName}</p>
               </div>
@@ -139,9 +313,10 @@ export default function Account() {
         <div className='flex items-center justify-between mb-3'>
             <h1 className='font-roboto text-xl font-medium'>Playlists</h1>
             <div className='flex items-center gap-3'>
-              <div className="cursor-pointer rounded-full w-10 h-10 flex items-center justify-center border-2 hover:bg-gray-100">
-                <AddIcon onClick={handleOpen1}/>
-                <Modal
+              <div onClick={handleOpen1} className="cursor-pointer rounded-full w-10 h-10 flex items-center justify-center border-2 hover:bg-gray-100">
+                <AddIcon/>
+              </div>
+              <Modal
                   open={open1}
                   onClose={handleClose1}
                   aria-labelledby="modal-modal-title"
@@ -151,32 +326,47 @@ export default function Account() {
                   <div className=' '>
                     <div className='flex mb-8 justify-between items-center'>
                       <h1 className='text-2xl font-roboto font-semibold'>Playlist</h1>
-                      <CloseIcon onClick={() => setOpen1(false)} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
+                      <CloseIcon onClick={() =>{ setOpen1(false); setPlaylistError({}); setPLaylistValues({})}} className='cursor-pointer' sx={{fontWeight: 800, fontSize: 30}}/>
                     </div>
-                    <form action="" onSubmit={(event) => event.preventDefault()} className='flex flex-col lg:flex lg:flex-row gap-2'>
-                      <input className='w-full lg:w-[70%] px-2 py-1 text-black placeholder:text-black font-roboto text-base rounded-md outline-none border-black border-2' type="text" placeholder='Playlist' name="CreatePlaylist" />
-                      <button onClick={() => setOpen1(false)} className='w-full lg:w-[30%] px-2 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600' type="submit">Update Banner</button>
+                    <form onSubmit={handlePlaylistSubmit} className='flex flex-col gap-4 items-center justify-center'>
+                      <div className='w-full'>
+                        <input className='w-full px-2 py-1 text-black placeholder:text-black font-roboto text-base rounded-md outline-none border-black border-2' type="text" placeholder='Playlist name' value={playlistValues.playlistName} name="playlistName" onChange={handlePlaylistChange}/>
+                        <p className='text-red-500 mt-0 text-sm'>{playlistError.playlistName}</p>
+                      </div>
+                      <button type="submit" className='w-full px-2 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Update Banner</button>
                     </form>
                   </div>
                 </Box>
               </Modal>
-              </div>
               <Link to={'/feed/playlists'}><p className='py-2 px-4 border-2 rounded-full cursor-pointer hover:bg-gray-100'>View all</p></Link>
             </div>
         </div>
         {/* cards */}
         <div className="flex gap-4 overflow-x-auto p-3 channel-list">
           {user && user.playlists && user.playlists.map((cat, index) => (
-            <Link key={index} to={`/playlist/${cat.name}`}>
-              <div className="flex-shrink-0 w-60">
+            <div key={index} className="flex-shrink-0 w-60 flex flex-col gap-2">
+              <Link  to={`/playlist/${cat.name}`}>
                 <img
                   src="https://ik.imagekit.io/kf28wicizj/Youtube/playlist.jpg?updatedAt=1736162630427"
                   alt='cat.name'
                   className="rounded-md w-60 h-36 object-cover hover:opacity-70"
                 />
-                <p className="text-sm font-medium mt-2">{cat.name}</p>
+              </Link>
+              <div className='flex items-center justify-between '>
+                <p className="text-sm font-medium ">{cat.name}</p>
+                <div onClick={handleClick}>
+                  <MoreVertIcon/>
+                </div>
               </div>
-            </Link>
+              <Popper id={id} open={popprOpen} anchorEl={anchorEl}>
+                <Box sx={{ border: 1,p: 1, bgcolor: 'background.paper', borderRadius: 1}}>
+                  <div className='flex items-center gap-4 cursor-pointer' onClick={() => deletePlaylist(cat.name)}>
+                    <DeleteOutlineIcon/>
+                    <h1 className='font-roboto text-black'>Delete Playlist</h1>
+                  </div>
+                </Box>
+              </Popper>
+            </div>
         ))}
         </div>
       </div>
@@ -237,5 +427,7 @@ export default function Account() {
         </div>
       </div>
     </div>
+    )}
+  </>
   )
 }

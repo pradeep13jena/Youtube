@@ -43,7 +43,7 @@ const channelSchema = new mongoose.Schema({
     min: 0,
   },
   videos: {
-    type: [String], // Array of video IDs
+    type: [mongoose.Schema.Types.ObjectId], // Array of video IDs
     required: true,
     default: [],
   },

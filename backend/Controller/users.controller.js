@@ -47,7 +47,7 @@ const getUserDetails = async (username) => {
           {
             $project: {
               username: 1,
-              email: 1,
+              name: 1,
               avatar: 1,
               channelDetails: 1, // Include populated channel details
               subscriptionDetails: 1, // Include populated subscription details
@@ -104,18 +104,18 @@ const getUserDetails = async (username) => {
 };
 
 export const register = async (req, res) => {
-  const { email, username, password, avatar } = req.body;
+  const { name, username, password, avatar } = req.body;
 
-  if (!username || !password || !email) {
-    return res.status(400).json({ error: "Username, password, and email are required" });
+  if (!username || !password || !name) {
+    return res.status(400).json({ error: "Username, password, and name are required" });
   }
 
-  if (typeof username !== "string" || typeof password !== "string" || typeof email !== "string") {
-    return res.status(400).json({ error: "Username, password, and email must be strings" });
+  if (typeof username !== "string" || typeof password !== "string" || typeof name !== "string") {
+    return res.status(400).json({ error: "Username, password, and name must be strings" });
   }
 
-  if (username.trim() === "" || password.trim() === "" || email.trim() === "") {
-    return res.status(400).json({ error: "Username, password, and email cannot contain only whitespace" });
+  if (username.trim() === "" || password.trim() === "" || name.trim() === "") {
+    return res.status(400).json({ error: "Username, password, and name cannot contain only whitespace" });
   }
 
   if (avatar && (typeof avatar !== "string" || !/^(https?:\/\/[^\s]+)$/.test(avatar))) {
@@ -131,7 +131,7 @@ export const register = async (req, res) => {
     const hashedPassword = bcryptjs.hashSync(password, 10);
     const newUser = new userModel({
       username: username.toLowerCase(),
-      email: email.toLowerCase(),
+      name: name.toLowerCase(),
       password: hashedPassword,
       avatar, // Directly use the provided avatar (default URL will apply if omitted)
     });
@@ -170,10 +170,9 @@ export const login = async (req, res) => {
     }
 
     const token = jwt.sign({ _id: checkUsername._id }, "E<x?XbO8dKI{p;9");
-
     res.status(200).json({
-      "User Name": username,
-      "Access token": token,
+      "username": username,
+      "jwtToken": token,
     });
   } catch (error) {
     res.status(500).json({ error: "An unexpected error occurred", details: error.message });
@@ -181,7 +180,7 @@ export const login = async (req, res) => {
 };
 
 export const getUser = async (req, res) => {
-  const { username } = req.body;
+  const { username } = req.user;
 
   if (!username) {
     return res.status(400).json({ message: "User ID is required" });

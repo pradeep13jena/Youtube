@@ -13,6 +13,7 @@ import Subscription from './src/components/Subscription'
 import Playlistseen from './src/components/Playlistseen'
 import Channelseen from './src/components/Channelseen'
 import ChannelOwner from './src/components/ChannelOwner'
+import Signin from './src/components/Signin'
 
 const router = createBrowserRouter([
   {
@@ -54,6 +55,10 @@ const router = createBrowserRouter([
       {
         path: '/owner/:channel',
         element: <ChannelOwner/>
+      },
+      {
+        path: '/signin',
+        element: <Signin/>
       }
     ]
   }

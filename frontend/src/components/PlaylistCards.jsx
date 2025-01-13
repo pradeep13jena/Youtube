@@ -10,7 +10,7 @@ function formatNumber(num) {
   } else if (num >= 1_000) {
     return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
   }
-  return num.toString();
+  return num;
 }
 
 export default function PlaylistCards({_id, thumbnail, title, channelName, views}) {

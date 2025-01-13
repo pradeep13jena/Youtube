@@ -4,6 +4,7 @@ import cors from "cors"
 import { videoRoutes } from "./Routes/video.routes.js";
 import { registration } from "./Routes/user.routes.js";
 import { channel } from "./Routes/channel.routes.js";
+import { playlist } from "./Routes/playlist.routes.js";
 
 const port = 5000
 const app = express()
@@ -28,3 +29,4 @@ app.listen(port, () => {
 videoRoutes(app)
 registration(app)
 channel(app)
+playlist(app)

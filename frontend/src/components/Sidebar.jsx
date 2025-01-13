@@ -4,16 +4,16 @@ import SubscriptionsOutlinedIcon from '@mui/icons-material/SubscriptionsOutlined
 import AccessTimeSharpIcon from '@mui/icons-material/AccessTimeSharp';
 import ThumbUpAltOutlinedIcon from '@mui/icons-material/ThumbUpAltOutlined';
 import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
-import { Avatar } from '@mui/material';
 import { useSelector } from 'react-redux';
-import { deepOrange } from '@mui/material/colors';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { selectAuth } from '../features/tokenSlice';
 
 
 
 export default function Sidebar() {
   const isToggle = useSelector((state => state.sidebar.isVisible))
+  const { token } = useSelector(selectAuth)
   const menuItem = [
     {
       navigate: '/',
@@ -41,18 +41,26 @@ export default function Sidebar() {
   const [user, setUser] = useState({})
 
   useEffect(() => {
-    const username = 'Ashish chanchalani'
 
     const fetchUserData = async () => {
       try {
-        const response = await axios.post("http://localhost:5000/user", {username});
+        const response = await axios.post("http://localhost:5000/user", 
+          {},
+          {
+            headers: {
+              Authorization: `JWT ${token}`,
+            }
+          }
+      );
         setUser(response.data);
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
     };
 
-    fetchUserData()
+    if(token){
+      fetchUserData()
+    }
   }, [])
 
   return (
@@ -75,22 +83,23 @@ export default function Sidebar() {
       <div className={` ${isToggle ? '' : 'hidden'} py-3 w-full flex flex-col gap-2`}>
         <h1 className='font-roboto font-medium text-[1.1rem] px-4 '>Subscriptions</h1>
         <ul className='flex flex-col gap-1'>
-          {user && user.subscriptionDetails
-           && user.subscriptionDetails
-          .length > 0 ? 
-          (user.subscriptionDetails
-          .map((cat, index) => {
-            return(
-              <Link key={index} to={`/channel/${cat.channelName}`}>
-                <li className='flex gap-3 items-center cursor-pointer hover:bg-gray-200 px-4 py-2 rounded-md'>
-                  <img src={cat.channelLogo} alt="" className='w-9 h-9 rounded-full'/>
-                  <p className='truncate text-sm'>{cat.channelName}</p>
-                </li>
-              </Link>
-          )})) : (
-            <p className='mt-3 text-sm font-roboto px-4'>No subscribed channels to display...</p>
-          )}
-        </ul>
+          {token ? (
+            user.subscriptionDetails && user.subscriptionDetails.length > 0 ? (
+              user.subscriptionDetails.map((cat, index) => (
+                <Link key={index} to={`/channel/${cat.channelName}`}>
+                  <li className='flex gap-3 items-center cursor-pointer hover:bg-gray-200 px-4 py-2 rounded-md'>
+                    <img src={cat.channelLogo} alt={`${cat.channelName} Logo`} className='w-7 h-7 rounded-full' />
+                    <p className='truncate text-sm'>{cat.channelName}</p>
+                  </li>
+                </Link>
+              ))
+            ) : (
+              <p className='mt-3 text-sm font-roboto px-4'>No subscribed channels to display...</p>
+            )
+          ) : <p className='mt-3 text-sm font-roboto px-4'>sign in to see subscribed channels</p>
+}
+      </ul>
+
       </div>
 
     </nav>

@@ -35,6 +35,10 @@ function formatNumber(num) {
 const playlist = ["Top Hits 2025", "Relaxing Vibe", "Liked videos", 'Watch later']
 
 export default function Homeviewer(cat) {
+
+  const userE = cat.userD.playlists[0].videos.some(video => video._id === cat._id);
+  console.log(userE);
+  
     const [openModal, setOpenModal] = useState(false)
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
@@ -111,11 +115,11 @@ export default function Homeviewer(cat) {
                         <h1 className="text-2xl font-roboto font-bold">Playlist</h1>
                       </div>
                       {
-                        playlist.map((cat, index) => {
+                        cat.userD.playlists.map((cata, index) => {
                           return (
                             <div key={index} className="flex w-full items-center justify-start gap-6">
-                              <input className="w-4 h-4" type="checkbox" value={cat} name={cat} id={cat} />
-                              <label className="text-lg cursor-pointer font-roboto" htmlFor={cat}>{cat}</label>
+                              <input checked={cata.videos.some(video => video._id === cat._id)} className="w-4 h-4" type="checkbox" value={cata.name} name={cata.name} id={cata.name} onChange={console.log('Hello')}/>
+                              <label className="text-lg cursor-pointer font-roboto" htmlFor={cata.name}>{cata.name}</label>
                             </div>
                           )
                         })

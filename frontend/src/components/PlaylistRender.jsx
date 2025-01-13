@@ -2,8 +2,6 @@ import React, { useState } from "react";
 import { Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined } from "@mui/icons-material";
-import AddIcon from '@mui/icons-material/Add';
-import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 
 export default function Homeviewer(cat) {

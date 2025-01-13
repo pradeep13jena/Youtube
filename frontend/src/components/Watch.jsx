@@ -1,6 +1,3 @@
-import { Avatar } from '@mui/material'
-import { deepOrange, deepPurple } from '@mui/material/colors'
-import { color, height } from '@mui/system'
 import React, { useState, useEffect } from 'react'
 import ReactPlayer from 'react-player'
 import NotificationsOutlinedIcon from '@mui/icons-material/NotificationsOutlined';
@@ -15,8 +12,10 @@ import DeleteOutlineIcon from '@mui/icons-material/DeleteOutline';
 import Box from '@mui/material/Box';
 import Popper from '@mui/material/Popper';
 import WatchSuggestion from './WatchSuggestion'
-import { useParams, useSearchParams } from 'react-router-dom'
+import { Link, useParams, useSearchParams } from 'react-router-dom'
 import axios from 'axios'
+import { useSelector } from "react-redux";
+import { selectAuth } from "../features/tokenSlice.js";
 
 const style ={
   border: '1px solid #ddd',
@@ -30,6 +29,7 @@ const style ={
 export default function Watch() {
   const [searchParams] = useSearchParams()
   const _id = searchParams.get("v")
+  const { token } = useSelector(selectAuth)
 
   const [sub, Setsub] = useState(false)
   const [expand, setExpand] = useState(false)
@@ -49,16 +49,24 @@ export default function Watch() {
   const [videos, setVideos] = useState({})
 
   useEffect(() => {
-    axios.get(`http://localhost:5000/videos/${_id}`)
-    .then((data) => {
-      setVideos(data.data)
-      console.log(data.data)
-      setComments(data.data.comments)
-    })
-    .catch((err) => {
-      console.log(err)
-    })
-  }, [])
+    if (token && _id) { // Ensure token and _id are available before making the request
+      axios
+        .get(`http://localhost:5000/videos/${_id}`, {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        })
+        .then((response) => {
+          setVideos(response.data);
+          console.log(response.data);
+          setComments(response.data.comments);
+        })
+        .catch((error) => {
+          console.error('Error fetching video details:', error);
+        });
+    }
+  }, [token, _id]); // Added token and _id as dependencies
+  
   
   const handleAddComment = () => {
     if (newComment.trim() !== "") {
@@ -68,7 +76,17 @@ export default function Watch() {
   };
 
   return (
-    <div className='videoWatcher w-full flex flex-col lg:flex-row gap-5 px-0 sm:px-8 py-5 md:h-[calc(100vh-59.2px)] overflow-y-auto'>
+    <>
+    {!token ? (
+      <div className="m-auto">
+        <Link to={"/signin"}>
+            <h1 className='text-base font-roboto font-medium px-3 py-1 bg-gray-100 rounded-full border-[1px] border-black hover:bg-gray-200'>
+              Login / sign up
+            </h1>
+        </Link>
+      </div>
+    ) : (
+      <div className='videoWatcher w-full flex flex-col lg:flex-row gap-5 px-0 sm:px-8 py-5 md:h-[calc(100vh-59.2px)] overflow-y-auto'>
       <div className='w-full lg:w-[70%] flex flex-col gap-3'>
           <div className="videosPlayer lg:rounded-lg relative pt-[54.25%] overflow-hidden">
             <ReactPlayer
@@ -259,4 +277,6 @@ export default function Watch() {
         })} */}
       </div>
     </div>
+    )}
+</>
 )}
