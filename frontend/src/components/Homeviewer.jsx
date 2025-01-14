@@ -1,12 +1,14 @@
 import React, { useEffect, useState } from "react";
-import { Link, useParams } from "react-router-dom";
-import { Avatar } from "@mui/material";
-import { deepPurple } from "@mui/material/colors";
+import { data, Link, useParams } from "react-router-dom";
+import axios from "axios";
 import { MoreVertOutlined } from "@mui/icons-material";
 import BookmarkBorderOutlinedIcon from '@mui/icons-material/BookmarkBorderOutlined';
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import Box from '@mui/material/Box';
 import Modal from '@mui/material/Modal';
+import { useSelector } from "react-redux";
+import { selectAuth } from "../features/tokenSlice";
+import ShowPLaylist from "../components/ShowPLaylist"
 
 const style = {
   position: 'absolute',
@@ -35,15 +37,28 @@ function formatNumber(num) {
 const playlist = ["Top Hits 2025", "Relaxing Vibe", "Liked videos", 'Watch later']
 
 export default function Homeviewer(cat) {
+  const { token } = useSelector(selectAuth)
+  const [openModal, setOpenModal] = useState(false)
+  const [open, setOpen] = React.useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
 
-  const userE = cat.userD.playlists[0].videos.some(video => video._id === cat._id);
-  console.log(userE);
+    function handleCLick(){
+      axios.put(`http://localhost:5000/playlist/${cat._id}`, 
+        {
+          "userName": cat.userD.username,
+          "playlistName": "Watch Later"
+        }, 
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          }
+        } 
+        )
+        .then(data => console.log(data))
+        .catch(data => console.log(data))
+    }
   
-    const [openModal, setOpenModal] = useState(false)
-    const [open, setOpen] = React.useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
-
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
@@ -94,8 +109,8 @@ export default function Homeviewer(cat) {
               <div className="py-1">
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
                   <WatchLaterOutlinedIcon />
-                  <h1 className="text-base font-roboto ">
-                    Add to watch Later
+                  <h1 className="text-base font-roboto " onClick={handleCLick}>
+                     Add to watch Later
                   </h1>
                 </div>
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
@@ -115,12 +130,9 @@ export default function Homeviewer(cat) {
                         <h1 className="text-2xl font-roboto font-bold">Playlist</h1>
                       </div>
                       {
-                        cat.userD.playlists.map((cata, index) => {
+                        cat && cat.userD && cat.userD.playlists && cat.userD.playlists.map((cata, index) => {
                           return (
-                            <div key={index} className="flex w-full items-center justify-start gap-6">
-                              <input checked={cata.videos.some(video => video._id === cat._id)} className="w-4 h-4" type="checkbox" value={cata.name} name={cata.name} id={cata.name} onChange={console.log('Hello')}/>
-                              <label className="text-lg cursor-pointer font-roboto" htmlFor={cata.name}>{cata.name}</label>
-                            </div>
+                            <ShowPLaylist cat={cat} cata={cata} token={token} key={index}/>
                           )
                         })
                       }

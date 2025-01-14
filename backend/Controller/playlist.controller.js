@@ -1,3 +1,4 @@
+import mongoose from "mongoose"
 import userModel from "../Models/users.model.js"
 
 export const createPlaylist = async (req, res) => {
@@ -65,8 +66,58 @@ export const deletePlaylist = async (req, res) => {
   }
 }
 
-export const addVideoPlaylist = async(req, res) => {
-  const {id} = req.params
+export const addVideoToPlaylist = async (req, res) => {
+  const { id } = req.params; // Video ID
+  const { userName, playlistName } = req.body;
 
-  
-}
+  // Check if the video ID is a valid MongoDB ObjectId
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    return res.status(404).send({ message: "Given ID is not a valid Video ID" });
+  }
+
+  // Validate input fields
+  if (!userName || !playlistName) {
+    return res.status(400).send({ message: "Username and playlist name are required." });
+  }
+
+  try {
+    // Find the user by username
+    const user = await userModel.findOne({ username: userName });
+    console.log(user)
+    if (!user) {
+      return res.status(404).send({ message: "User not found." });
+    }
+
+    // Find the playlist within the user's playlists
+    const playlist = user.playlists.find((pl) => pl.name === playlistName);
+    if (!playlist) {
+      return res.status(404).send({ message: `Playlist '${playlistName}' not found for user '${userName}'.` });
+    }
+
+    // Check if the video is already in the playlist
+    const videoIndex = playlist.videos.indexOf(id);
+
+    if (videoIndex !== -1) {
+      // Video already exists in the playlist; remove it
+      playlist.videos.splice(videoIndex, 1);
+      await user.save();
+      return res.status(200).send({
+        message: `Video removed from playlist '${playlistName}'.`,
+      });
+    }
+
+    // Add the video to the playlist
+    playlist.videos.push(id);
+    await user.save();
+
+    res.status(200).send({
+      message: `Video added to playlist '${playlistName}'.`,
+    });
+  } catch (error) {
+    console.error("Error adding video to playlist:", error);
+    res.status(500).send({
+      message: "An error occurred while processing your request.",
+      error: error.message,
+    });
+  }
+};

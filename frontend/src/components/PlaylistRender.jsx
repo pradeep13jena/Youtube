@@ -1,10 +1,30 @@
 import React, { useState } from "react";
 import { Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
-import { MoreVertOutlined } from "@mui/icons-material";
+import { MoreVertOutlined, VaccinesTwoTone } from "@mui/icons-material";
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
+import axios from "axios";
 
 export default function Homeviewer(cat) {
+
+  console.log(cat)
+
+  function handleCLick(){
+    axios.put(`http://localhost:5000/playlist/${cat.video._id}`, 
+      {
+        "userName": cat.user.username,
+        "playlistName": cat.playlistName
+      }, 
+      {
+        headers: {
+          Authorization: `JWT ${cat.token}`,
+        }
+      } 
+      )
+      .then(data => console.log(data))
+      .catch(data => console.log(data))
+  }
+
   const [openModal, setOpenModal] = useState(false)
   return (
     <div className="flex flex-col">
@@ -56,7 +76,7 @@ export default function Homeviewer(cat) {
               <div className="py-1">
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">
                   <WatchLaterOutlinedIcon />
-                  <h1 className="text-base font-roboto ">
+                  <h1 className="text-base font-roboto" onClick={handleCLick}>
                     Remove from playlist
                   </h1>
                 </div>

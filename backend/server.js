@@ -5,6 +5,8 @@ import { videoRoutes } from "./Routes/video.routes.js";
 import { registration } from "./Routes/user.routes.js";
 import { channel } from "./Routes/channel.routes.js";
 import { playlist } from "./Routes/playlist.routes.js";
+import { like } from "./Routes/like.routes.js";
+import { subscribe } from "./Routes/subscribe.routes.js";
 
 const port = 5000
 const app = express()
@@ -30,3 +32,5 @@ videoRoutes(app)
 registration(app)
 channel(app)
 playlist(app)
+like(app)
+subscribe(app)

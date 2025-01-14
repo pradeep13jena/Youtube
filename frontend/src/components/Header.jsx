@@ -46,7 +46,7 @@ export default function Header(){
             <MenuSharpIcon sx={{fontSize: 36}} className='cursor-pointer hover:bg-gray-200 duration-300 p-1 rounded-3xl' onClick={handletoggleSidebar}/>
           </div>
           <div>
-            <img className='w-24' src="https://ik.imagekit.io/kf28wicizj/Youtube/youtubelogo-removebg-preview.png?updatedAt=1736008969847" alt="" />
+            <img className='w-28' src="https://ik.imagekit.io/kf28wicizj/Youtube/youtubelogo-removebg-preview.png?updatedAt=1736008969847" alt="" />
           </div>
       </div>
       <div className='flex gap-3 items-center justify-end w-full'>

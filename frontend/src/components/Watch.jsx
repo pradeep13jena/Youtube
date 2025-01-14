@@ -30,50 +30,112 @@ export default function Watch() {
   const [searchParams] = useSearchParams()
   const _id = searchParams.get("v")
   const { token } = useSelector(selectAuth)
-
-  const [sub, Setsub] = useState(false)
+  
   const [expand, setExpand] = useState(false)
-
+  
   const [anchorEl, setAnchorEl] = React.useState(null);
-
+  
   const handleClick = (event) => {
     setAnchorEl(anchorEl ? null : event.currentTarget);
   };
-
+  
   const open = Boolean(anchorEl);
   const id = open ? 'simple-popper' : undefined;
-
-
-  const [comments, setComments] = useState([]);
-  const [newComment, setNewComment] = useState("")
-  const [videos, setVideos] = useState({})
-
+  
   useEffect(() => {
     if (token && _id) { // Ensure token and _id are available before making the request
       axios
-        .get(`http://localhost:5000/videos/${_id}`, {
-          headers: {
-            Authorization: `JWT ${token}`,
-          },
-        })
-        .then((response) => {
-          setVideos(response.data);
-          console.log(response.data);
-          setComments(response.data.comments);
-        })
-        .catch((error) => {
-          console.error('Error fetching video details:', error);
-        });
+      .get(`http://localhost:5000/videos/${_id}`, {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      })
+      .then((response) => {
+        setVideos(response.data);
+        console.log(response.data);
+        setComments(response.data.comments);
+      })
+      .catch((error) => {
+        console.error('Error fetching video details:', error);
+      });
+      
+      
+      const fetchUserData = async () => {
+        try {
+          const response = await axios.post("http://localhost:5000/user", 
+            {},
+            {
+              headers: {
+                Authorization: `JWT ${token}`,
+              }
+            }
+          );
+          setUser(response.data);
+        } catch (error) {
+          console.error("Error fetching user data:", error);
+        }
+      };
+      
+      fetchUserData()
     }
   }, [token, _id]); // Added token and _id as dependencies
   
-  
+  const [user, setUser] = useState({})
+  const [comments, setComments] = useState([]);
+  const [newComment, setNewComment] = useState("")
+  const [videos, setVideos] = useState({})
+  const [sub, Setsub] = useState(() => {
+    return user?.subscriptionDetails?.some(x => videos?.channelName === x.channelName) || false;
+  });
+    
+
   const handleAddComment = () => {
     if (newComment.trim() !== "") {
       setComments([...comments, newComment]); // Add new comment to the list
       setNewComment(""); // Clear the input field
     }
   };
+
+  function likeVideo(){
+    axios.put(`http://localhost:5000/like/${_id}`, 
+    {}, 
+    {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    })
+    .then(data => console.log(data))
+    .catch(err => console.log(err))
+  }
+
+  function dislikeVideo(){
+    axios.put(`http://localhost:5000/dislike/${_id}`, 
+      {}, 
+      {
+        headers: {
+          Authorization: `JWT ${token}`,
+        },
+      })
+      .then(data => console.log(data))
+      .catch(err => console.log(err))
+  }
+
+  function handlesub(){
+    axios.put('http://localhost:5000/subscribe',
+    {
+      channelName: videos.channelName
+    }, {
+      headers: {
+        Authorization: `JWT ${token}`,
+      },
+    }
+    )
+    .then(data => {
+      console.log(data)
+      Setsub(!sub)
+    })
+    .catch(err => console.log(err))
+  }
 
   return (
     <>
@@ -122,7 +184,7 @@ export default function Watch() {
                   </div>
                   <div className='flex flex-col'>
                     <h1 className='font-medium font-roboto'>{videos.channelName}</h1>
-                    <p className='text-gray-400 font-roboto text-xs md:text-sm'>23.3k subscribers</p>
+                    <p className='text-gray-400 font-roboto text-xs md:text-sm'>{videos && videos.channelDetails && videos.channelDetails.subscribers}</p>
                   </div>
                 </div>
                 <div>
@@ -132,7 +194,7 @@ export default function Watch() {
                     ? "bg-gray-300 text-black flex items-center justify-center"
                     : "  bg-black text-white"
                     }`}
-                    onClick={() => Setsub(!sub)}
+                    onClick={handlesub}
                     >
                     {sub ? (
                     <>
@@ -147,7 +209,9 @@ export default function Watch() {
                     Subscribed
                     </>              
                     ) : (
-                    "Subscribe"
+                      <>
+                      Subscribe
+                      </>
                     )}
                   </h1>
                 </div>
@@ -156,11 +220,12 @@ export default function Watch() {
               {/* Video Action */}
               <div className='flex items-center justify-start lg:justify-end gap-3 w-full lg:gap-2'>
               <div className='flex items-center'>
-                <div className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tl-3xl rounded-bl-3xl'>
+                <div onClick={likeVideo} className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tl-3xl rounded-bl-3xl'>
+
                   <ThumbUpAltOutlinedIcon sx={{ fontSize: { xs: 22 } }} />
                   <p className='font-roboto text-xs'>{videos.likes}</p>
                 </div>
-                <div className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tr-3xl rounded-br-3xl'>
+                <div onClick={dislikeVideo} className='flex items-center gap-3 px-2 py-1 md:px-4 md:py-2 bg-gray-200 cursor-pointer hover:bg-gray-300 rounded-tr-3xl rounded-br-3xl'>
                   <ThumbDownOutlinedIcon sx={{ fontSize: { xs: 22 } }} />
                 </div>
               </div>

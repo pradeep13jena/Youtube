@@ -84,12 +84,6 @@ const videoSchema = new mongoose.Schema({
     default: 0,
     min: 0,
   },
-  dislikes: {
-    type: Number,
-    required: true,
-    default: 0,
-    min: 0,
-  },
   uploadDate: {
     type: Date,
     required: true,
@@ -97,6 +91,11 @@ const videoSchema = new mongoose.Schema({
   comments: {
     type: [commentSchema],
     default: [],
+  },
+  dislikedBy: {
+    type: [mongoose.Schema.Types.ObjectId], // Array of user IDs who disliked the video
+    ref: "User", // Reference to the User model
+    default: [], // Default is an empty array
   },
 });
 

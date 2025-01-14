@@ -52,6 +52,10 @@ export default function Playlist() {
               cat.videos.length > 0 ? (
                 cat.videos.map((video, videoIndex) => (
                   <PlaylistRender
+                    video={video}
+                    user={user}
+                    token={token}
+                    playlistName={playlist}
                     key={videoIndex}
                     thumbnail={video.thumbnail}
                     title={video.title}

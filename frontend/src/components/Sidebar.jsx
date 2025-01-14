@@ -24,11 +24,11 @@ export default function Sidebar() {
       icons: <SubscriptionsOutlinedIcon sx={{fontSize: 25}}/>,
       label: 'Subscription'
     }, {
-      navigate: '/playlist/Watch later',
+      navigate: '/playlist/Watch Later',
       icons: <AccessTimeSharpIcon sx={{fontSize: 25}}/>,
       label: 'Watch later'
     }, {
-      navigate: '/playlist/Liked videos',
+      navigate: '/playlist/Liked Videos',
       icons: <ThumbUpAltOutlinedIcon sx={{fontSize: 25}}/>,
       label: 'Liked vidoes'
     }, {
