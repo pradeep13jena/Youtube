@@ -7,6 +7,7 @@ import { logout, selectAuth } from "../features/tokenSlice.js";
 import { toggleSidebar } from '../features/sidebarSlice';
 import { Link } from 'react-router-dom';
 import CloseIcon from '@mui/icons-material/Close';
+import { updateText } from '../features/searchSlice.js';
 import axios from 'axios';
 
 export default function Header(){
@@ -15,6 +16,7 @@ export default function Header(){
   const [isSearch, SetisSearch] = useState(false)
   const dispatch = useDispatch()
   const { token } = useSelector(selectAuth); 
+  const text = useSelector((state) => state.searchbar.text);
   
   const handletoggleSidebar = () => {
     dispatch(toggleSidebar())
@@ -59,7 +61,7 @@ export default function Header(){
             <CloseIcon onClick={() => {SetisSearch(!isSearch)}} sx={{fontSize: 32}}/>
           </div>
           <div className={`md:flex items-center gap-2 pl-1 py-1 pr-3 border-2 border-gray-400 rounded-3xl hidden`}>
-            <input type='text' placeholder='Search' className='w-full px-2 py-[3px] border-none outline-none font-roboto bg-transparent'></input>
+            <input type='text' placeholder='Search' value={text} onChange={(e) => dispatch(updateText(e.target.value))} className='w-full px-2 py-[3px] border-none outline-none font-roboto bg-transparent'></input>
             <SearchSharpIcon sx={{fontSize: 24}}/>
           </div>
         </div>

@@ -18,7 +18,6 @@ function formatNumber(num) {
 
 export default function ChannelRender({cat}) {
   const [openModal, setOpenModal] = useState(false)
-  console.log(cat)
   return (
     <div className="flex flex-col">
       <div className="flex md:flex-col sm:gap-[1px] transform transition-transform duration-300">
@@ -47,9 +46,7 @@ export default function ChannelRender({cat}) {
               />
             </div>
             <div
-              className={` bottom-16 right-8 rounded-md shadow-md bg-white ${
-                openModal ? "fixed" : "hidden"
-              } `}
+              className={` bottom-16 right-8 rounded-md shadow-md bg-white hidden`}
             >
               <div className="py-1">
                 <div className="flex items-center cursor-pointer hover:bg-gray-200 hover:text-black gap-2 px-2 py-2">

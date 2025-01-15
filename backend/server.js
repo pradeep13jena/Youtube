@@ -7,6 +7,7 @@ import { channel } from "./Routes/channel.routes.js";
 import { playlist } from "./Routes/playlist.routes.js";
 import { like } from "./Routes/like.routes.js";
 import { subscribe } from "./Routes/subscribe.routes.js";
+import { comment } from "./Routes/comment.routes.js";
 
 const port = 5000
 const app = express()
@@ -34,3 +35,4 @@ channel(app)
 playlist(app)
 like(app)
 subscribe(app)
+comment(app)

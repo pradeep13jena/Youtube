@@ -4,10 +4,9 @@ import { deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined, VaccinesTwoTone } from "@mui/icons-material";
 import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
 import axios from "axios";
+import { Link } from "react-router-dom";
 
 export default function Homeviewer(cat) {
-
-  console.log(cat)
 
   function handleCLick(){
     axios.put(`http://localhost:5000/playlist/${cat.video._id}`, 
@@ -29,11 +28,13 @@ export default function Homeviewer(cat) {
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
-        <img
-          src={cat.thumbnail}
-          alt=""
-          className="md:rounded-lg w-full h-44 sm:h-48 object-cover"
-        />
+        <Link to={`/watch?v=${cat.video._id}`}>
+          <img
+            src={cat.thumbnail}
+            alt=""
+            className="md:rounded-lg w-full h-44 sm:h-48 object-cover"
+          />
+        </Link>
         <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
           <Avatar sx={{ width: 35, height: 35, bgcolor: deepPurple[500] }}>
             N

@@ -7,13 +7,33 @@ import { useSelector } from "react-redux";
 import { selectAuth } from "../features/tokenSlice";
 
 export default function Channel() {
-  const [sub, Setsub] = useState(false);
+  const [sub, Setsub] = useState(null);
   const [Expand, setExpand] = useState()
   const [channelDetails, setChannelDetails] = useState({})
+  const [user, setUser] = useState({})
   const { token } = useSelector(selectAuth)
   const { channel } = useParams();
 
-  useEffect(() => {
+  function handlesub() {
+    axios
+      .put(
+        'http://localhost:5000/subscribe',
+        { channelName: channelDetails.channelName },
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        }
+      )
+      .then((data) => {
+        refetchChannelDetails(); // Refetch updated channel details
+        refetchUserDetails(); // Refetch updated user details
+        
+      })
+      .catch((err) => console.error('Error subscribing:', err));
+  }
+  
+  function refetchChannelDetails() {
     if (token && channel) {
       axios
         .get(`http://localhost:5000/channel/${channel}`, {
@@ -22,13 +42,41 @@ export default function Channel() {
           },
         })
         .then((response) => {
-          setChannelDetails(response.data);
+          setChannelDetails(response.data); // Update channel details
+          console.log(response.data)
         })
-        .catch((error) => {
-          console.error('Error fetching channel details:', error);
-        });
+        .catch((error) => console.error('Error fetching channel details:', error));
     }
-  }, [token, channel]); // Added token and channel to dependency array
+  }
+  
+  function refetchUserDetails() {
+    axios
+      .post(
+        "http://localhost:5000/user",
+        {},
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        }
+      )
+      .then((response) => {
+        setUser(response.data); // Update user details
+        console.log(response.data)
+      })
+      .catch((error) => console.error('Error fetching user details:', error));
+  }
+  
+  useEffect(() => {
+    refetchChannelDetails();
+  }, [token, channel]); // Fetch channel details on mount or when token/channel changes
+  
+    useEffect(() => {
+      const value = user?.subscriptionDetails?.some(
+        (x) => channelDetails?.channelName === x.channelName
+      );
+      Setsub(value)
+    }, [user, channelDetails]);
   
 
   return (
@@ -52,7 +100,7 @@ export default function Channel() {
                 <div className="flex flex-col gap-1 items-start justify-start mb-2 md:mb-0">
                   <div className="flex items-center gap-0 justify-start">
                     <p className="text-sm text-gray-800">
-                      {channelDetails.subscribers} subscribers
+                      {channelDetails && channelDetails.subscribers} subscribers
                     </p>
                     <p className="text-sm px-1 text-gray-800">&#x2022;</p>
                     <p className="text-sm text-gray-800">{channelDetails && channelDetails.videos && channelDetails.videos.length} videos</p>
@@ -68,7 +116,7 @@ export default function Channel() {
                         ? "bg-gray-300 text-black flex items-center justify-center"
                         : "  bg-black text-white"
                     }`}
-                    onClick={() => Setsub(!sub)}
+                    onClick={handlesub}
                   >
                     {sub ? (
                       <>

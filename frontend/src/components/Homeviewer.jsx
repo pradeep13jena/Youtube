@@ -43,21 +43,21 @@ export default function Homeviewer(cat) {
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
 
-    function handleCLick(){
-      axios.put(`http://localhost:5000/playlist/${cat._id}`, 
-        {
-          "userName": cat.userD.username,
-          "playlistName": "Watch Later"
-        }, 
-        {
-          headers: {
-            Authorization: `JWT ${token}`,
-          }
-        } 
-        )
-        .then(data => console.log(data))
-        .catch(data => console.log(data))
-    }
+  function handleCLick(){
+    axios.put(`http://localhost:5000/playlist/${cat._id}`, 
+      {
+        "userName": cat.userD.username,
+        "playlistName": "Watch Later"
+      }, 
+      {
+        headers: {
+          Authorization: `JWT ${token}`,
+        }
+      } 
+      )
+      .then(data => console.log(data))
+      .catch(data => console.log(data))
+  }
   
   return (
     <div className="flex flex-col">
@@ -74,7 +74,7 @@ export default function Homeviewer(cat) {
             <img src={cat && cat.channelDetails && cat.channelDetails.channelLogo} className="w-9 h-9 rounded-full" alt="" />
           </Link>
           <div className="flex flex-col gap-[.8px] flex-1">
-            <h1 className="text-base font-semibold">{cat.title}</h1>
+            <h1 className="text-base font-semibold line-clamp-2">{cat.title}</h1>
             <div className="flex md:flex-col items-center md:items-start">
               <Link to={`/channel/${cat.channelDetails.channelName}`}>
                 <p className="text-gray-700 text-[11px] md:text-[13px]">

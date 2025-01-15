@@ -4,6 +4,7 @@ import axios from 'axios'
 import { useSelector } from "react-redux";
 import { selectAuth } from "../features/tokenSlice.js";
 import {Link} from "react-router-dom";
+import { updateText } from "../features/searchSlice.js";
 
 const style1= {
   position: 'absolute',
@@ -24,6 +25,7 @@ export default function Home() {
   const handleClose = () => setOpen(false);
   const [videos, setVideos] = useState([])
   const { token } = useSelector(selectAuth); 
+  const text = useSelector((state) => state.searchbar.text);
 
   useEffect(() => {
 
@@ -120,9 +122,22 @@ export default function Home() {
   
         {/* Body Section */}
         <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-126px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-          {videos?.map((cat, index) => {
+        {videos
+          ?.filter((cat) => 
+            !text || cat.title.toLowerCase().includes(text.toLowerCase()) || cat.channelName.toLowerCase().includes(text.toLowerCase()) // Filter based on "text"
+          )
+          .map((cat) => {
             return (
-              <Homeviewer key={cat._id} userD={user} _id={cat._id} channelDetails={cat.channelDetails} thumbnail={cat.thumbnail} title={cat.title} channelName={cat.channelName} views={cat.views}/>
+              <Homeviewer
+                key={cat._id}
+                userD={user}
+                _id={cat._id}
+                channelDetails={cat.channelDetails}
+                thumbnail={cat.thumbnail}
+                title={cat.title}
+                channelName={cat.channelName}
+                views={cat.views}
+              />
             );
           })}
         </div>

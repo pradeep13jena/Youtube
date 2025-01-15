@@ -40,8 +40,8 @@ export const subscribed = async (req, res) => {
       message: isSubscribed
         ? `Unsubscribed from ${channelName}.`
         : `Subscribed to ${channelName}.`,
-      userSubscriptions: user.subscription,
-      channelSubscribersCount: channel.subscribers,
+      userSubscriptions: user,
+      channelSubscribersCount: channel,
     });
   } catch (error) {
     console.error(error);
