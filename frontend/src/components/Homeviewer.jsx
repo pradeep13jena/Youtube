@@ -70,15 +70,15 @@ export default function Homeviewer(cat) {
           />
         </Link>
         <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
-          <Link to={`/channel/${cat.channelDetails.channelName}`}>
-            <img src={cat && cat.channelDetails && cat.channelDetails.channelLogo} className="w-9 h-9 rounded-full" alt="" />
+          <Link to={`/channel/${cat.channelDetails?.channelName}`}>
+            <img src={cat.channelDetails?.channelLogo} className="w-9 h-9 rounded-full" alt="" />
           </Link>
           <div className="flex flex-col gap-[.8px] flex-1">
             <h1 className="text-base font-semibold line-clamp-2">{cat.title}</h1>
             <div className="flex md:flex-col items-center md:items-start">
-              <Link to={`/channel/${cat.channelDetails.channelName}`}>
+              <Link to={`/channel/${cat.channelDetails?.channelName}}`}>
                 <p className="text-gray-700 text-[11px] md:text-[13px]">
-                  {cat.channelName}
+                  {cat?.channelDetails?.channelName}
                 </p>
               </Link>
               {window.screen.availWidth < 640 ? (

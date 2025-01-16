@@ -66,6 +66,17 @@ export default function Channel() {
       })
       .catch((error) => console.error('Error fetching user details:', error));
   }
+
+  function formatNumber(num) {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return num;
+  }
   
   useEffect(() => {
     refetchChannelDetails();
@@ -91,8 +102,8 @@ export default function Channel() {
                   className="absolute top-0 left-0 w-full h-full object-cover rounded-lg md:rounded-xl"
                 />
             </div>
-            <div className="channelDetails w-full flex justify-start items-center gap-4 md:gap-9 mb-5 md:mb-0">
-              <img src={channelDetails.channelLogo} alt={channelDetails.channelName} className="w-20 h-20 sm:w-20 sm:h-20 rounded-full md:w-32 md:h-32"/>
+            <div className="channelDetails w-full flex justify-start items-center gap-3 md:gap-9 mb-5 md:mb-0">
+              <img src={channelDetails.channelLogo} alt={channelDetails.channelName} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full md:w-32 md:h-32"/>
               <div className="flex flex-col md:gap-3">
                 <h1 className="text-xl md:text-4xl font-bold font-roboto">
                   {channelDetails.channelName}
@@ -100,7 +111,7 @@ export default function Channel() {
                 <div className="flex flex-col gap-1 items-start justify-start mb-2 md:mb-0">
                   <div className="flex items-center gap-0 justify-start">
                     <p className="text-sm text-gray-800">
-                      {channelDetails && channelDetails.subscribers} subscribers
+                      {formatNumber(channelDetails && channelDetails.subscribers)} subscribers
                     </p>
                     <p className="text-sm px-1 text-gray-800">&#x2022;</p>
                     <p className="text-sm text-gray-800">{channelDetails && channelDetails.videos && channelDetails.videos.length} videos</p>

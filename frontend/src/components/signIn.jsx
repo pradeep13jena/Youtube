@@ -4,6 +4,8 @@ import PasswordRoundedIcon from '@mui/icons-material/PasswordRounded';
 import AlternateEmailRoundedIcon from '@mui/icons-material/AlternateEmailRounded';
 import { login } from '../features/tokenSlice';
 import { useDispatch } from 'react-redux';
+import VisibilityOffOutlinedIcon from '@mui/icons-material/VisibilityOffOutlined';
+import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -28,6 +30,7 @@ export default function SignIn() {
 
   const [formValues, setFormValues] = useState(initialValue);
   const [formError, setFormError] = useState({});
+  const [visible, setVisible] = useState(false)
 
   function handleChange(e){
     const {name, value} = e.target
@@ -43,6 +46,7 @@ export default function SignIn() {
       const formData = {name: name.toLowerCase(), username: username.toLowerCase(), password}
       axios.post(url, formData)
       .then((res) => {
+        alert(res.data.message)
         if(action === "Login"){
           dispatch(login(res.data.jwtToken))
           navigate("/")
@@ -87,8 +91,23 @@ export default function SignIn() {
   return (
     <div className='container flex flex-col md:max-w-2xl mx-auto mt-16'>
       <div className="header flex flex-col items-center gap-2 w-full">
-        <div className="text text-red-500 text-3xl font-roboto font-bold">{action}</div>
-        <div className="underline w-20 h-2 bg-red-500 border-2"></div>
+        <div className="flex justify-evenly md:w-3/4 w-full">
+          <div className='flex flex-col'>
+            <div className={`text-red-500 text-2xl mb-1 md:text-3xl font-roboto font-bold cursor-pointer`} onClick={() => {
+            setAction("Login");
+            setURL(loginURL);
+          }}>Login</div>
+            <div className={`transition-all duration-500 ${ action === "Login" ? "h-1 bg-red-500" : ""}`}></div>
+          </div>
+          <div>
+            <div className={`text-red-500 text-2xl mb-1 md:text-3xl font-roboto cursor-pointer font-bold`} onClick={() => 
+            {
+              setAction("Sign Up");
+              setURL(registerURL);
+            }}>Sign up</div>
+            <div className={`transition-all duration-500 ${ action === "Sign Up" ? "h-1 bg-red-500" : ""}`}></div>
+          </div>
+        </div>
       </div>
       <form onSubmit={handleSubmit}>
         <div className="inputs mt-10 flex flex-col gap-3 mx-4">
@@ -135,24 +154,14 @@ export default function SignIn() {
               height: { xs: 20, md: 27 },
               marginLeft: 2,
             }} />
-            <input id='password' onChange={handleChange} name="signIN_password" value={formValues.signIN_password} type="password" placeholder='Password'  className='bg-transparent w-full outline-none border-0 ml-3 font-roboto text-lg'/>
+            <input id='password' onChange={handleChange} name="signIN_password" value={formValues.signIN_password} type={visible ? 'text' : 'password'} placeholder='Password'  className='bg-transparent w-full outline-none border-0 ml-3 font-roboto text-lg'/>
+            <div className='mr-3 text-gray-500 w-10 h-10 px-2 transition-all duration-100 flex justify-center items-center cursor-pointer rounded-full hover:bg-gray-400' onClick={() => setVisible(!visible)}>{visible ? <VisibilityOutlinedIcon/> : <VisibilityOffOutlinedIcon/>}</div>
           </div>
           <p className='text-sm text-red-500 font-roboto mt-1'>{formError.signIN_password}</p>
         </div>
         </div>
         <div className="submit-container flex justify-center gap-3 mt-7 mx-auto ">
-          <button type='button' onClick={() => 
-            {
-              setAction("Sign Up");
-              setURL(registerURL);
-              console.log(url)
-            }} className={`${action === "Login" ? "bg-gray-200 text-black hover:bg-gray-300" : "bg-red-500 text-white" } submit flex justify-center items-center px-5 py-2 rounded-full border-2 font-roboto text-base md:text-lg duration-200 cursor-pointer`}>Sign Up</button>
-          <button type='button' onClick={() => {
-            setAction("Login");
-            setURL(loginURL);
-            console.log(url)
-          }} className={`${action === "Sign Up" ? "bg-gray-200 text-black hover:bg-gray-300" : "bg-red-500 text-white"} submit flex justify-center items-center px-5 py-2 rounded-full border-2 font-roboto text-base md:text-lg duration-200 cursor-pointer`}>Login</button>
-          <button className='px-5 rounded-full py-2 border-2 bg-gray-200 font-roboto text-base md:text-lg hover:bg-gray-300 duration-200' type='submit'>Submit</button>
+          <button className='px-5 rounded-md py-2 border-2 bg-gray-200 font-roboto text-base md:text-lg hover:bg-gray-300 duration-150' type='submit'>Submit</button>
         </div>
       </form>
     </div>

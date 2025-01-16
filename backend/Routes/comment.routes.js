@@ -1,8 +1,13 @@
-import { verifyToken } from "../Middlewares/verifyToken.js"
-import { addComment, editComment, deleteComment } from "../Controller/comments.controller.js"
+import { verifyToken } from "../Middlewares/verifyToken.js";
+import { addComment, editComment, deleteComment } from "../Controller/comments.controller.js";
 
 export const comment = (app) => {
-  app.post("/comment", verifyToken, addComment)
-  app.put("/comment", verifyToken, editComment)
-  app.delete("/comment", verifyToken, deleteComment)
-}
+  // Add a new comment
+  app.post("/comment", verifyToken, addComment);
+
+  // Edit an existing comment
+  app.put("/comment", verifyToken, editComment);
+
+  // Delete a comment
+  app.delete("/comment", verifyToken, deleteComment);
+};

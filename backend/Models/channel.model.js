@@ -8,7 +8,7 @@ const channelSchema = new mongoose.Schema({
   },
   owner: {
     type: String,
-    required: true, // Should correspond to a userId in the User schema
+    required: true,
     trim: true,
   },
   description: {

@@ -98,6 +98,7 @@ export default function Home() {
 
   return (
   <>
+  {console.log(videos)}
   {!token ? (<div className="m-auto">
     <Link to={"/signin"}>
         <h1 className='text-base font-roboto font-medium px-3 py-1 bg-gray-100 rounded-full border-[1px] border-black hover:bg-gray-200'>
@@ -122,24 +123,34 @@ export default function Home() {
   
         {/* Body Section */}
         <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-126px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
-        {videos
-          ?.filter((cat) => 
-            !text || cat.title.toLowerCase().includes(text.toLowerCase()) || cat.channelName.toLowerCase().includes(text.toLowerCase()) // Filter based on "text"
-          )
-          .map((cat) => {
-            return (
-              <Homeviewer
-                key={cat._id}
-                userD={user}
-                _id={cat._id}
-                channelDetails={cat.channelDetails}
-                thumbnail={cat.thumbnail}
-                title={cat.title}
-                channelName={cat.channelName}
-                views={cat.views}
-              />
-            );
-          })}
+        {videos && videos.length > 0 ? (
+            (() => {
+              const filteredVideos = videos.filter(
+                (cat) =>
+                  !text ||
+                  cat.title.toLowerCase().includes(text.toLowerCase()) ||
+                  cat.channelName.toLowerCase().includes(text.toLowerCase())
+              );
+
+              return filteredVideos.length > 0 ? (
+                filteredVideos.map((cat) => (
+                  <Homeviewer
+                    key={cat._id}
+                    userD={user}
+                    _id={cat._id}
+                    thumbnail={cat.thumbnail}
+                    title={cat.title}
+                    views={cat.views}
+                    channelDetails={cat.channelDetails}
+                  />
+                ))
+              ) : (
+                <p>No videos match your search.</p>
+              );
+            })()
+          ) : (
+            <p>No videos available.</p>
+          )}
         </div>
       </div>
   )}

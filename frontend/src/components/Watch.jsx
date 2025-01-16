@@ -214,6 +214,29 @@ export default function Watch() {
       .catch((err) => console.log(err));
   }
 
+  function convertToNormalDate(isoDate) {
+    const date = new Date(isoDate);
+  
+    // Extract date components
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
+    const day = String(date.getDate()).padStart(2, "0");
+  
+    return `${day}-${month}-${year}`; // Format as YYYY-MM-DD
+  }
+  
+
+  function formatNumber(num) {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return num;
+  }
+
   return (
     <>
       {!token ? (
@@ -244,7 +267,7 @@ export default function Watch() {
                 <h1 className="videoTitle font-roboto text-sm md:text-[1.3rem] font-semibold">
                   {videos.title}
                 </h1>
-                <p className="text-xs md:text-sm">{videos.views} views</p>
+                <p className="text-xs md:text-sm">{formatNumber(videos.views)} views</p>
               </div>
 
               {/* Channel Details and Action */}
@@ -339,7 +362,7 @@ export default function Watch() {
               {/* Description bar */}
               <div className="p-4 w-full bg-gray-200 rounded-lg">
                 <h1 className="text-black font-roboto text-sm font-medium mb-2">
-                  {videos.views}
+                {convertToNormalDate(videos.uploadDate)} • {formatNumber(videos.views)} views 
                 </h1>
                 <p
                   className={`font-roboto text-sm text-gray-700 duration-300 ${

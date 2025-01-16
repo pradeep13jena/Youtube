@@ -12,7 +12,7 @@ const playlistSchema = new mongoose.Schema({
   }
 });
 
-
+// User Schema
 const userSchema = new mongoose.Schema({
   username: {
     type: String,

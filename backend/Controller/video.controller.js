@@ -63,6 +63,53 @@ try{
 
 }
 
+const getVideoDetails = async (channelName) => {
+  try {
+    const channelExpand = await mongoose.connection.db
+      .collection("channels")
+      .aggregate([
+        // Match the specific channel by channelName
+        {
+          $match: { "channelName": channelName }
+        },
+
+        // Lookup to get video details by matching the ObjectIds in the "videos" array
+        {
+          $lookup: {
+            from: "videos",  // The collection to join with
+            localField: "videos",  // The array of ObjectIds in the channel object
+            foreignField: "_id",  // The field to match in the "videos" collection
+            as: "videoDetails"  // The new field to store matched video details
+          }
+        },
+
+        // Project to format the output and include the necessary fields
+        {
+          $project: {
+            channelName: 1,
+            owner: 1,
+            description: 1,
+            channelBanner: 1,
+            channelLogo: 1,
+            subscribers: 1,
+            videos: 1,  // Keep the original video ObjectIds
+            videoDetails: 1  // Include the matched video details
+          }
+        }
+      ]).toArray(); // Ensure you convert the cursor to an array
+
+    // Check if result is empty
+    if (channelExpand.length === 0) {
+      throw new Error("Channel not found or no video details available.");
+    }
+
+    return channelExpand[0]; // Return the first (and only) result since channelName is unique
+
+  } catch (error) {
+    throw new Error(`Failed to fetch video details: ${error.message}`);
+  }
+}
+
 const getEntireVideos = async () => {
 
 try{
@@ -125,6 +172,7 @@ export const videosDisplay = async (req, res) => {
     if (!videos || videos.length === 0) {
       return res.status(404).json({ message: "No videos found" });
     }
+
     res.status(200).json(videos);
   } catch (error) {
     res.status(500).json({ message: "An unexpected error occurred", details: error.message });
@@ -149,10 +197,12 @@ export const uploadVideo = async (req, res) => {
   const { title, thumbnail, videoLink, description, categories } = req.body;
   const { channel } = req.params;
 
+  // Check if all required fields are provided
   if (!title || !thumbnail || !videoLink || !description || categories === undefined) {
     return res.status(400).json({ error: "Title, thumbnail, videoLink, description, and categories are required" });
   }
 
+  // Validate data types
   if (
     typeof title !== "string" ||
     typeof thumbnail !== "string" ||
@@ -165,6 +215,7 @@ export const uploadVideo = async (req, res) => {
     });
   }
 
+  // Validate that fields are not empty or whitespace
   if (
     title.trim() === "" ||
     thumbnail.trim() === "" ||
@@ -177,39 +228,48 @@ export const uploadVideo = async (req, res) => {
   }
 
   try {
+    // Format categories
     const formattedCategories = Array.isArray(categories)
-      ? categories
-      : categories.split(",").map((cat) => cat.trim());
+      ? categories.filter((cat) => cat.trim() !== "") // Remove empty categories
+      : categories.split(",").map((cat) => cat.trim()).filter((cat) => cat !== ""); // Filter empty strings after split
 
+    // Create new video document
     const newVideo = new videoModel({
       title: title.trim(),
       videoLink: videoLink.trim(),
       thumbnail: thumbnail.trim(),
       description: description.trim(),
-      channelName: channel.toLowerCase(),
+      channelName: channel.trim(),
       categories: formattedCategories,
       uploadDate: new Date(),
     });
 
+    // Save new video
     await newVideo.save();
 
+    // Find the newly saved video
     const videoFind = await videoModel.findOne({ title: title.trim() });
 
-    const channelUpdate = await mongoose.connection.db
-      .collection("channels")
-      .updateOne(
-        { channelName: channel.toLowerCase() },
-        { $push: { videos: videoFind._id } }
-      );
+    // Find the channel by channel name
+    const channelFind = await channelModel.findOne({ channelName: channel });
 
-    if (channelUpdate.modifiedCount > 0) {
-      console.log("Video added to channel successfully!");
-    } else {
-      console.log("No changes made to the channel.");
+    if (!channelFind) {
+      return res.status(404).json({ error: "Channel not found" });
     }
 
-    res.status(201).json({ message: "Video uploaded successfully" });
+    // Insert the video ID into the channel's videos array
+    channelFind.videos.push(videoFind._id);
+
+    // Update the channel with the new video ID
+    channelFind.save()
+
+    const channelWithVideo = await getVideoDetails(channel)
+
+    // Send success response
+    res.status(201).json({ message: "Video uploaded successfully", channelWithVideo });
   } catch (error) {
+    // Log and send error response
+    console.error("Error uploading video:", error);
     res.status(500).json({ error: "Internal server error", details: error.message });
   }
 };

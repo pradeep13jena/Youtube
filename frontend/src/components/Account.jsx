@@ -75,7 +75,7 @@ export default function Account() {
           }
       );
         setUser(response.data);
-        console.log(response.data)
+        console.log(response)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }
@@ -97,7 +97,10 @@ export default function Account() {
         }
       }
     )
-    .then(data => setPoppropen(false))
+    .then(data => {
+      setUser(data.data.newUser)
+      setPoppropen(false)
+    })
   }
 
   // form validation
@@ -132,13 +135,13 @@ export default function Account() {
   function handleChannelValidate(values){
     const errors = {}
     const imageReg = /^(http|https):\/\/[^\s]+$/
-    const nameReg = /^[\w\s]{3,15}$/
-    const descReg = /^[\w\s.,!?'"-]{0,200}$/
+    const nameReg = /^[\w\s]{3,20}$/
+    const descReg = /^[\w\s.,!?'"-]{0,1500}$/
 
     if(!values.channelName){
       errors.channelName = "Channel name is required"
     } else if (!nameReg.test(values.channelName)){
-      errors.channelName = "Letters, numbers and spaces are allowed and between 2 and 15 characters!"
+      errors.channelName = "Letters, numbers and spaces are allowed and between 2 and 20 characters!"
     }
 
     if (!values.channelBanner) {
@@ -156,7 +159,7 @@ export default function Account() {
     if (!values.channelDescp) {
       errors.channelDescp = "Channel description is required";
     } else if (!descReg.test(values.channelDescp)) {
-      errors.channelDescp = "Description must not be longer than 200 words!";
+      errors.channelDescp = "Description must not be longer than 1500 words!";
     }
 
     setChannelError(errors)
@@ -183,7 +186,7 @@ export default function Account() {
 
     if(isValid){
       const {channelName, channelLogo, channelBanner, channelDescp: description} = channelValues
-      const formData = {channelName : channelName.toLowerCase(), channelLogo, channelBanner, description}
+      const formData = {channelName : channelName, channelLogo, channelBanner, description}
       axios.post("http://localhost:5000/channel",
         formData,
         {
@@ -192,8 +195,12 @@ export default function Account() {
           },
         }
       )
-      .then((data) => console.log(data))
-      .catch((error) => console.log(error))
+      .then((data) => {
+        alert(data.data.message)
+        setUser(data.data.user)
+        console.log(data)
+      })
+      .catch((error) => console.log(error.response.data.message))
     }
   }
 
@@ -209,7 +216,9 @@ export default function Account() {
         },
       }
       )
-      .then((data) => alert(data.data.message))
+      .then((data) => {
+        setUser(data.data.newUser)
+      })
       .catch((error) => alert(error.response.data.message ))
     }
   }
@@ -292,18 +301,22 @@ export default function Account() {
         </div>
         {/* cards */}
         <div className="flex gap-4 overflow-x-auto p-3 channel-list">
-          {user && user.channelDetails && user.channelDetails.map((cat, index) => (
-            <Link key={index} to={`/owner/${cat.channelName}`}>
-              <div className="flex-shrink-0 w-40 flex flex-col justify-center items-center gap-1">
-                <img
-                  src={cat.channelLogo}
-                  alt={cat.channelName}
-                  className="rounded-md object-cover hover:opacity-70"
-                />
-                <p className="text-sm font-medium mt-2">{cat.channelName}</p>
-              </div>
-            </Link>
-          ))}
+        {user && user.channelDetails && user.channelDetails.length > 0 ? (
+            user.channelDetails.map((cat, index) => (
+              <Link key={index} to={`/owner/${cat.channelName}`}>
+                <div className="flex-shrink-0 w-40 flex flex-col justify-center items-center gap-1">
+                  <img
+                    src={cat.channelLogo}
+                    alt={cat.channelName}
+                    className="rounded-md object-cover hover:opacity-70"
+                  />
+                  <p className="text-sm font-medium mt-2">{cat.channelName}</p>
+                </div>
+              </Link>
+            ))
+          ) : (
+            <p>Create your first channel.</p>
+          )}
         </div>
       </div>
 
@@ -333,7 +346,7 @@ export default function Account() {
                         <input className='w-full px-2 py-1 text-black placeholder:text-black font-roboto text-base rounded-md outline-none border-black border-2' type="text" placeholder='Playlist name' value={playlistValues.playlistName} name="playlistName" onChange={handlePlaylistChange}/>
                         <p className='text-red-500 mt-0 text-sm'>{playlistError.playlistName}</p>
                       </div>
-                      <button type="submit" className='w-full px-2 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Update Banner</button>
+                      <button type="submit" className='w-full px-2 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Create playlist</button>
                     </form>
                   </div>
                 </Box>
@@ -360,7 +373,7 @@ export default function Account() {
               </div>
               <Popper id={id} open={popprOpen} anchorEl={anchorEl}>
                 <Box sx={{ border: 1,p: 1, bgcolor: 'background.paper', borderRadius: 1}}>
-                  <div className='flex items-center gap-4 cursor-pointer' onClick={() => deletePlaylist(cat.name)}>
+                  <div className='flex items-center gap-4 cursor-pointer'  onClick={() => {deletePlaylist(cat.name);}}>
                     <DeleteOutlineIcon/>
                     <h1 className='font-roboto text-black'>Delete Playlist</h1>
                   </div>

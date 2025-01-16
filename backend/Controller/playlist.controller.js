@@ -1,6 +1,107 @@
 import mongoose from "mongoose"
 import userModel from "../Models/users.model.js"
 
+const getUserDetails = async (username) => {
+  try {
+    const userDetails = await mongoose.connection.db
+      .collection("users")
+      .aggregate([
+          // Step 1: Match the user by their username
+          {
+            $match: { username: username } // Replace with dynamic username
+          },
+        
+          // Step 2: Lookup for channel details based on the channels array
+          {
+            $lookup: {
+              from: "channels", // Lookup channels collection
+              localField: "channels", // Field in the current document (Array of channel names)
+              foreignField: "channelName", // Match against channelName in channels collection
+              as: "channelDetails" // Store the matched channel details in this new field
+            }
+          },
+        
+          // Step 3: Lookup for subscription details based on the subscription array
+          {
+            $lookup: {
+              from: "channels", // Lookup channels collection
+              localField: "subscription", // Field in the current document (Array of subscribed channel names)
+              foreignField: "channelName", // Match against channelName in channels collection
+              as: "subscriptionDetails" // Store the matched subscription details in this new field
+            }
+          },
+        
+          // Step 4: Lookup for video details from the videos collection based on video ObjectIds in playlists
+          {
+            $lookup: {
+              from: "videos", // The collection containing video documents
+              localField: "playlists.videos", // The field in the current document (Array of ObjectIds)
+              foreignField: "_id", // The field in the "videos" collection (ObjectId)
+              as: "videoDetails" // Store the matched video details in this new field
+            }
+          },
+        
+          // Step 5: Re-project the document and populate video details in playlists
+          {
+            $project: {
+              username: 1,
+              name: 1,
+              avatar: 1,
+              channelDetails: 1, // Include populated channel details
+              subscriptionDetails: 1, // Include populated subscription details
+              playlists: {
+                // For each playlist, map the videos array to match details
+                $map: {
+                  input: "$playlists",
+                  as: "playlist",
+                  in: {
+                    name: "$$playlist.name",
+                    videos: {
+                      // Map over the videos in the playlist to match video details
+                      $map: {
+                        input: "$$playlist.videos", 
+                        as: "videoId",
+                        in: {
+                          $let: {
+                            vars: {
+                              videoDetail: {
+                                $arrayElemAt: [
+                                  {
+                                    $filter: {
+                                      input: "$videoDetails", // Array of matched videos
+                                      as: "videoDetail",
+                                      cond: { $eq: ["$$videoDetail._id", "$$videoId"] }
+                                    }
+                                  },
+                                  0
+                                ]
+                              }
+                            },
+                            in: {
+                              $ifNull: [
+                                "$$videoDetail", // Return video details if found
+                                { _id: "$$videoId", title: "Unknown Video", description: "No details available" } // Fallback if no match found
+                              ]
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        ])        
+      .toArray()
+    return userDetails.length > 0 ? userDetails[0] : null; // Return a single user or null
+  } catch (error) {
+    throw new Error(`Failed to fetch user details: ${error.message}`);
+  }
+  
+};
+
+
 export const createPlaylist = async (req, res) => {
   const { playlistName } = req.body
 
@@ -27,7 +128,8 @@ export const createPlaylist = async (req, res) => {
       { upsert: true }
     )
 
-    return res.status(201).json({ message: "Playlist created successfully", updatedDocument });
+    const newUser = await getUserDetails(req.user.username);
+    return res.status(201).json({ message: "Playlist created successfully", newUser });
     
   } catch (error) {
     console.error("Error creating playlist:", error);
@@ -57,8 +159,8 @@ export const deletePlaylist = async (req, res) => {
         $pull: { playlists: { name: playlist } } // $pull operator removes the playlist with the given name
       }
     );
-  
-    return res.status(200).json({ message: "Playlist deleted successfully" });
+    const newUser = await getUserDetails(req.user.username);
+    return res.status(200).json({ message: "Playlist deleted successfully", newUser});
 
   } catch (error) {
     console.log(error) 

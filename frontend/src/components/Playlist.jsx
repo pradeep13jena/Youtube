@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 export default function Playlist() {
   const {playlist} = useParams()
   const { token } = useSelector(selectAuth)
+  const [videos, setVideos] = useState({})
   const [user, setUser] = useState({})
 
   useEffect(() => {
@@ -30,7 +31,7 @@ export default function Playlist() {
 
     fetchUserData()
   }, [])
-
+  
   return (
     <div className='sm:px-5 my-5 w-full'>
       {!token ? (

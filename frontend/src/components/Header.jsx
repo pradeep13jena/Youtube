@@ -57,7 +57,7 @@ export default function Header(){
             <SearchSharpIcon className='cursor-pointer' onClick={() => {SetisSearch(!isSearch)}} sx={{fontSize: 32}}/>
           </div>
           <div className={` items-center absolute top-0 left-0 pl-1 pr-3 w-full border-b-2 h-full bg-white z-50 transition-all duration-100 ${isSearch ? 'flex' : 'hidden'}`}>
-            <input placeholder='Search' className='w-full p-2 border-none outline-none font-roboto text-lg' type="text" />
+            <input placeholder='Search' value={text} onChange={(e) => dispatch(updateText(e.target.value))} className='w-full p-2 border-none outline-none font-roboto text-lg' type="text" />
             <CloseIcon onClick={() => {SetisSearch(!isSearch)}} sx={{fontSize: 32}}/>
           </div>
           <div className={`md:flex items-center gap-2 pl-1 py-1 pr-3 border-2 border-gray-400 rounded-3xl hidden`}>

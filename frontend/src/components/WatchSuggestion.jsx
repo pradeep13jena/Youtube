@@ -9,7 +9,7 @@ export default function WatchSuggestion({cat}) {
   return (
     <div className="flex flex-col">
       <div className="flex sm:gap-[1px] transform transition-transform duration-300">
-      <Link to={'/videos/watch'}>
+      <Link to={`/watch?v=${cat._id}`}>
         <img
           src={cat.thumbnail}
           alt=""

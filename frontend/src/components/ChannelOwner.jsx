@@ -47,6 +47,17 @@ export default function ChannelOwner() {
   const [channelDetails, setChannelDetails] = useState({})
   const [Expand, setExpand] = useState(false)
 
+  function formatNumber(num) {
+    if (num >= 1_000_000_000) {
+      return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+    } else if (num >= 1_000_000) {
+      return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+    } else if (num >= 1_000) {
+      return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+    }
+    return num;
+  } 
+
   useEffect(() => {
     if (token && channel) {
       axios
@@ -57,7 +68,6 @@ export default function ChannelOwner() {
         })
         .then((response) => {
           setChannelDetails(response.data);
-          console.log(response.data)
         })
         .catch((error) => {
           console.error('Error fetching channel details:', error);
@@ -148,7 +158,10 @@ export default function ChannelOwner() {
           },
         }
       )
-      .then(data => alert(data.data.message))
+      .then(data => {
+        alert(data.data.message)
+        setChannelDetails(data.data.channelWithVideo)
+      })
       .catch(error => console.log(error))
     }
   }
@@ -352,9 +365,9 @@ export default function ChannelOwner() {
           </Modal>
             </div>
             <div className="channelDetails w-full flex justify-start items-center gap-4 mb-5 md:mb-0">
-                <div className="relative">
-                  <img src={channelDetails.channelLogo} alt={channelDetails.channelName} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full md:w-32 md:h-32"/>
-                  <p onClick={handleupdateLogo} className="absolute right-0 bottom-0 cursor-pointer bg-black rounded-full w-5 h-5 sm:w-9 sm:h-9 p-1 flex justify-center items-center">
+                <div className="relative flex-shrink-0">
+                <img src={channelDetails.channelLogo} alt={channelDetails.channelName} className="w-16 h-16 sm:w-20 sm:h-20 rounded-full md:w-32 md:h-32"/>
+                <p onClick={handleupdateLogo} className="absolute right-0 bottom-0 cursor-pointer bg-black rounded-full w-5 h-5 sm:w-9 sm:h-9 p-1 flex justify-center items-center">
                     <ModeEditOutlineIcon sx={{color: "white", fontSize: { xs: 12, sm: 15, lg: 20 } }} />
                   </p>
                   <Modal
@@ -406,7 +419,7 @@ export default function ChannelOwner() {
                             <textarea className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2 resize-none'  placeholder='Channel Description' name="description" value={DescValues.description} onChange={handleNameChange}></textarea>
                             <p className='text-red-500 mt-0 text-sm'>{DescError.description}</p>
                           </div>
-                          <button type="submit" className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Create channel</button>
+                          <button type="submit" className='px-3 py-1 font-roboto text-base rounded-md outline-none border-2 border-blue-600'>Update details</button>
                         </form>
                       </div>
                     </Box>
@@ -414,7 +427,7 @@ export default function ChannelOwner() {
                 <div className="flex flex-col gap-1 items-start justify-start mb-3 md:mb-0">
                   <div className="flex items-center gap-0 justify-start">
                     <p className="text-sm text-gray-800">
-                      {channelDetails.subscribers} subscribers
+                    {formatNumber(channelDetails && channelDetails.subscribers)} subscribers
                     </p>
                     <p className="text-sm px-1 text-gray-800">&#x2022;</p>
                     <p className="text-sm text-gray-800">{channelDetails && channelDetails.videos && channelDetails.videos.length} videos</p>

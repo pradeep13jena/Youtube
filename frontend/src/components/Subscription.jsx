@@ -65,8 +65,8 @@ export default function Subscription() {
               {user &&
               user.subscriptionDetails &&
               user.subscriptionDetails.map((cat, index) => (
-                <Link key={index} to ={`/channel/${cat.channelName}`}>
-                  <div className='flex flex-col justify-center items-center gap-1'>
+                <Link className='flex-shrink-0' key={index} to ={`/channel/${cat.channelName}`}>
+                  <div className=' flex flex-col justify-center items-center gap-1'>
                     <img src={cat.channelLogo} alt={cat.channelName} className='w-12 h-12 md:w-14 md:h-14 rounded-full'/>
                   </div>
                 </Link>
@@ -78,12 +78,15 @@ export default function Subscription() {
           <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-172px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4 mt-4 md:mt-0">
             {videos && videos.length > 0 ? (
               videos.map((cat) => (
-                <Homeviewer
+                <Homeviewer 
+                  videos={videos}
+                  cat={cat}
+                  userD={user}
                   key={cat._id}
-                  channelDetails={cat.channelDetails}
                   thumbnail={cat.thumbnail}
                   title={cat.title}
                   channelName={cat.channelName}
+                  channelDetails={cat.channelDetails}
                   views={cat.views}
                 />
               ))

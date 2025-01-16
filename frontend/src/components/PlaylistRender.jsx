@@ -7,7 +7,7 @@ import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function Homeviewer(cat) {
-
+  
   function handleCLick(){
     axios.put(`http://localhost:5000/playlist/${cat.video._id}`, 
       {
@@ -25,6 +25,7 @@ export default function Homeviewer(cat) {
   }
 
   const [openModal, setOpenModal] = useState(false)
+
   return (
     <div className="flex flex-col">
       <div className="flex flex-col gap-[1px] transform transition-transform duration-300">
@@ -36,9 +37,6 @@ export default function Homeviewer(cat) {
           />
         </Link>
         <div className="flex gap-3 px-2 md:px-0 py-2 justify-start items-start">
-          <Avatar sx={{ width: 35, height: 35, bgcolor: deepPurple[500] }}>
-            N
-          </Avatar>
           <div className="flex flex-col gap-[.8px] flex-1">
             <h1 className="text-base font-semibold">{cat.title}</h1>
             <div className="flex md:flex-col items-center md:items-start">

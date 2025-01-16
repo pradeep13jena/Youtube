@@ -8,12 +8,12 @@ const getUserDetails = async (username) => {
     const userDetails = await mongoose.connection.db
       .collection("users")
       .aggregate([
-          // Step 1: Match the user by their username
+          // Match the user by their username
           {
             $match: { username: username } // Replace with dynamic username
           },
         
-          // Step 2: Lookup for channel details based on the channels array
+          // Lookup for channel details based on the channels array
           {
             $lookup: {
               from: "channels", // Lookup channels collection
@@ -23,7 +23,7 @@ const getUserDetails = async (username) => {
             }
           },
         
-          // Step 3: Lookup for subscription details based on the subscription array
+          // Lookup for subscription details based on the subscription array
           {
             $lookup: {
               from: "channels", // Lookup channels collection
@@ -33,7 +33,7 @@ const getUserDetails = async (username) => {
             }
           },
         
-          // Step 4: Lookup for video details from the videos collection based on video ObjectIds in playlists
+          // Lookup for video details from the videos collection based on video ObjectIds in playlists
           {
             $lookup: {
               from: "videos", // The collection containing video documents
@@ -43,7 +43,7 @@ const getUserDetails = async (username) => {
             }
           },
         
-          // Step 5: Re-project the document and populate video details in playlists
+          // Re-project the document and populate video details in playlists
           {
             $project: {
               username: 1,
@@ -179,21 +179,27 @@ export const login = async (req, res) => {
   }
 };
 
+// TO get particular user details
 export const getUser = async (req, res) => {
   const { username } = req.user;
 
+  // Basic validation to check the username is provided
   if (!username) {
     return res.status(400).json({ message: "User ID is required" });
   }
 
   try {
-    const user = await getUserDetails(username);
+    // Chcek for the user in the db
+    const user = await getUserDetails(username); 
+    // If not found then return np
     if (!user) {
-      return res.status(404).json({ message: "No such user" });
+      return res.status(404).json({ message: "No user found" });
     }
 
+    // If found then return the user detail
     res.status(200).json(user);
   } catch (error) {
+    // Otherwise the error message
     res.status(500).json({ message: error.message });
   }
 };
