@@ -8,7 +8,6 @@ const sidebarSlice = createSlice({
   reducers: {
     toggleSidebar: (state) => {
       state.isVisible = !state.isVisible;
-      // console.log(state.isVisible)
     }
   }
 })
