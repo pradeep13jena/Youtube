@@ -7,7 +7,7 @@ import { Link } from 'react-router-dom';
 export default function WatchSuggestion({cat}) {
   const [openModal, setOpenModal] = useState(false)
   return (
-    <div className="flex flex-col">
+    <div key={cat._id} className="flex flex-col">
       <div className="flex sm:gap-[1px] transform transition-transform duration-300">
       <Link to={`/watch?v=${cat._id}`}>
         <img

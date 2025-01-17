@@ -14,6 +14,7 @@ import { selectAuth } from '../features/tokenSlice';
 export default function Sidebar() {
   const isToggle = useSelector((state => state.sidebar.isVisible))
   const { token } = useSelector(selectAuth)
+  
   const menuItem = [
     {
       navigate: '/',

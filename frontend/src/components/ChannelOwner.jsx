@@ -479,7 +479,7 @@ export default function ChannelOwner() {
                             <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoURL}</p>
                           </div>
                           <div className='w-full'>
-                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video genre' value={videoValues.videoGenre} name="videoGenre" onChange={handleVideoChange}/>
+                            <input className='w-full px-3 py-1 font-roboto text-lg border-gray-600 rounded-md outline-none border-2' type="text" placeholder='Video genre ("Jobs, Cinema, Cartoon")' value={videoValues.videoGenre} name="videoGenre" onChange={handleVideoChange}/>
                             <p className='text-red-500 mt-0 text-sm'>{videoErrors.videoGenre}</p>
                           </div>
                           <div className='w-full'>

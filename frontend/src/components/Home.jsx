@@ -66,39 +66,32 @@ export default function Home() {
   }
   }, [token])
 
+  const [Genre, setGenre] = useState([]);
+  const [genreSearch, setGenreSearch] = useState("")
 
-  const videoGenres = [
-    "Nature",
-    "Adventure",
-    "Travel",
-    "Education",
-    "Technology",
-    "Gaming",
-    "Music",
-    "Fitness",
-    "Food",
-    "Health & Wellness",
-    "Sports",
-    "Comedy",
-    "Science",
-    "Documentary",
-    "DIY & Craft",
-    "Fashion & Beauty",
-    "Motivational",
-    "Kids",
-    "Movies & Entertainment",
-    "News & Politics",
-    "History",
-    "Photography",
-    "Lifestyle",
-    "Automobile",
-    "Art & Design",
-    "Programming & Development",
-  ];
+  useEffect(() => {
+    const allCategories = videos?.reduce((acc, video) => {
+      if (video.categories) {
+        return [...acc, ...video.categories];
+      }
+      return acc;
+    }, ["All"]);
 
+    const uni = new Set(allCategories)
+    
+    setGenre([...uni] || []);
+  }, [videos]);
+
+  const genreSelected = (cat) => {
+    if(cat === "All"){
+      setGenreSearch("")
+    } else {
+      setGenreSearch(cat)
+    }
+  }
+  
   return (
   <>
-  {console.log(videos)}
   {!token ? (<div className="m-auto">
     <Link to={"/signin"}>
         <h1 className='text-base font-roboto font-medium px-3 py-1 bg-gray-100 rounded-full border-[1px] border-black hover:bg-gray-200'>
@@ -111,12 +104,11 @@ export default function Home() {
           id="id1" 
           className="flex items-center justify-start gap-2 py-2 w-full min-w-0 overflow-x-auto bg-white sticky top-0 z-50"
         >
-          {videoGenres.map((cat, index) => (
+          {Genre?.map((cat, index) => (
             <div 
               key={index} 
-              className="shrink-0 min-w-max px-2 py-1 bg-gray-200 rounded-lg hover:bg-gray-300 cursor-pointer"
-            >
-              <p className='font-medium'>{cat}</p>
+              className="shrink-0 min-w-max px-2 py-1 mb-2 bg-gray-200 rounded-lg hover:bg-gray-300 cursor-pointer">
+              <p onClick={() => genreSelected(cat)} className='font-medium'>{cat}</p>
             </div>
           ))}
         </div>
@@ -125,12 +117,17 @@ export default function Home() {
         <div id="id1" className="w-full grid grid-cols-1 sm:grid-cols-2 md:h-[calc(100vh-126px)] overflow-y-auto lg:grid-cols-3 2xl:grid-cols-4 gap-4">
         {videos && videos.length > 0 ? (
             (() => {
-              const filteredVideos = videos.filter(
-                (cat) =>
+              const filteredVideos = videos.filter((cat) => {
+
+                const matchesGenre = !genreSearch || cat.categories.some((category) => category === genreSearch);
+
+                const matchesText =
                   !text ||
                   cat.title.toLowerCase().includes(text.toLowerCase()) ||
-                  cat.channelName.toLowerCase().includes(text.toLowerCase())
-              );
+                  cat.channelName.toLowerCase().includes(text.toLowerCase());
+
+                return matchesGenre && matchesText;
+            });
 
               return filteredVideos.length > 0 ? (
                 filteredVideos.map((cat) => (

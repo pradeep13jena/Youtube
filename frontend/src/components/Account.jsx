@@ -75,7 +75,6 @@ export default function Account() {
           }
       );
         setUser(response.data);
-        console.log(response)
       } catch (error) {
         console.error("Error fetching user data:", error);
       }

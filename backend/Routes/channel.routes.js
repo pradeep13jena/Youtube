@@ -7,14 +7,14 @@ export const channel = (app) => {
   app.post("/channel", verifyToken, createChannel);
   
   // Route to view a channel's details
-  app.get("/channel/:channelName", verifyToken, viewChannel);
+  app.get("/channel/:channel", verifyToken, viewChannel);
   
   // Route to upload a video to a specific channel
-  app.post("/channel/:channelName/videos", verifyToken, uploadVideo);
+  app.post("/channel/:channel/videos", verifyToken, uploadVideo);
   
   // Route to delete a specific channel
-  app.delete("/channel/:channelName", verifyToken, deleteChannel);
+  app.delete("/channel/:channel", verifyToken, deleteChannel);
   
   // Route to update a channel's details
-  app.put("/channel/:channelName", verifyToken, updateChannel);
+  app.put("/channel/:channel", verifyToken, updateChannel);
 };

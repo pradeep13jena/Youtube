@@ -37,7 +37,6 @@ export default function Subscription() {
       // Fetch videos data
       fetchData('http://localhost:5000/videos')
         .then((videoData) => {
-          console.log(videoData);
           setVideos(videoData);
         })
         .catch((error) => console.error('Error fetching videos data:', error));

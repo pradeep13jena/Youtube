@@ -6,15 +6,10 @@ import ThumbDownOutlinedIcon from "@mui/icons-material/ThumbDownOutlined";
 import BookmarkBorderSharpIcon from "@mui/icons-material/BookmarkBorderSharp";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import ReplySharpIcon from "@mui/icons-material/ReplySharp";
-import EditIcon from "@mui/icons-material/Edit";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteOutlineIcon from "@mui/icons-material/DeleteOutline";
-import Box from "@mui/material/Box";
-import Popper from "@mui/material/Popper";
 import WatchSuggestion from "./WatchSuggestion";
 import { Link, useParams, useSearchParams } from "react-router-dom";
 import axios from "axios";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { selectAuth } from "../features/tokenSlice.js";
 import Comments from "./comments.jsx";
 
@@ -28,6 +23,18 @@ const style = {
   textAlign: "center",
 };
 
+function formatNumber(num) {
+  if (num >= 1_000_000_000) {
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+  } else if (num >= 1_000_000) {
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+  } else if (num >= 1_000) {
+    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+  }
+  return num;
+}
+
+
 export default function Watch() {
   const [searchParams] = useSearchParams();
   const _id = searchParams.get("v");
@@ -36,6 +43,8 @@ export default function Watch() {
   const [expand, setExpand] = useState(false);
   const [allVideos, setAllVideos] = useState({})
   const [showComment, setShowComment] = useState(false)
+
+  const dispatch = useDispatch()
 
   useEffect(() => {
     if (token && _id) {
@@ -204,7 +213,7 @@ export default function Watch() {
           },
         }
       )
-      .then((data) => {
+      .then((data) => { 
         Setsub(!sub);
         setVideos((x) => ({
           ...x,
@@ -225,18 +234,6 @@ export default function Watch() {
     return `${day}-${month}-${year}`; // Format as YYYY-MM-DD
   }
   
-
-  function formatNumber(num) {
-    if (num >= 1_000_000_000) {
-      return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
-    } else if (num >= 1_000_000) {
-      return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
-    } else if (num >= 1_000) {
-      return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
-    }
-    return num;
-  }
-
   return (
     <>
       {!token ? (
@@ -293,7 +290,7 @@ export default function Watch() {
                       <p className="text-gray-400 font-roboto text-xs md:text-sm">
                         {videos &&
                           videos.channelDetails &&
-                          videos.channelDetails.subscribers}
+                          formatNumber(videos.channelDetails.subscribers)}
                       </p>
                     </div>
                   </div>
@@ -450,7 +447,8 @@ export default function Watch() {
             </h1>
             <>
             {allVideos && allVideos.length > 0 ? (
-              allVideos.map((cat) => <WatchSuggestion key={cat.id} cat={cat} />)
+              allVideos.map((cat) => 
+            <><WatchSuggestion cat={cat} /></>)
             ) : (
               <p>No videos available</p>
             )}

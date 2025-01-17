@@ -46,7 +46,6 @@ export default function SignIn() {
       const formData = {name: name.toLowerCase(), username: username.toLowerCase(), password}
       axios.post(url, formData)
       .then((res) => {
-        alert(res.data.message)
         if(action === "Login"){
           dispatch(login(res.data.jwtToken))
           navigate("/")

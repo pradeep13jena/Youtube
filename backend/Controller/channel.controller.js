@@ -220,7 +220,7 @@ export const createChannel = async (req, res) => {
 export const viewChannel = async (req, res) => {
   try {
     const { channel } = req.params; // Destructure the given url parameter
-
+    
     // Basic validation to check the given input
     if (!channel || typeof channel !== "string" || channel.trim() === "") {
       return res.status(400).json({ message: "Invalid channel name provided" });

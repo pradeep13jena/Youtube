@@ -235,11 +235,11 @@ export const uploadVideo = async (req, res) => {
 
     // Create new video document
     const newVideo = new videoModel({
-      title: title.trim(),
-      videoLink: videoLink.trim(),
-      thumbnail: thumbnail.trim(),
-      description: description.trim(),
-      channelName: channel.trim(),
+      title: title,
+      videoLink: videoLink,
+      thumbnail: thumbnail,
+      description: description,
+      channelName: channel,
       categories: formattedCategories,
       uploadDate: new Date(),
     });

@@ -42,8 +42,7 @@ export default function Channel() {
           },
         })
         .then((response) => {
-          setChannelDetails(response.data); // Update channel details
-          console.log(response.data)
+          setChannelDetails(response.data);
         })
         .catch((error) => console.error('Error fetching channel details:', error));
     }
@@ -61,8 +60,7 @@ export default function Channel() {
         }
       )
       .then((response) => {
-        setUser(response.data); // Update user details
-        console.log(response.data)
+        setUser(response.data);
       })
       .catch((error) => console.error('Error fetching user details:', error));
   }
