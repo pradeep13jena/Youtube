@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import channelModel from "../Models/channel.model.js";
 import userModel from "../Models/users.model.js";
+import { channel } from "../Routes/channel.routes.js";
 
 // Aggregation pipeline to pull Channel details along with video it has.
 const getVideoDetails = async (channelName) => {
@@ -245,7 +246,7 @@ export const viewChannel = async (req, res) => {
 // Logic to delete channel.
 export const deleteChannel = async (req, res) => {
   const { Channel } = req.params;
-
+  console.log(Channel)
   if (!Channel || Channel.trim() === "") {
     return res
       .status(400)

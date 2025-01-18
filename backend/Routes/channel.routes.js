@@ -18,8 +18,8 @@ export const channel = (app) => {
   app.post("/channel/:channel/videos", verifyToken, uploadVideo);
 
   // Route to delete a specific channel
-  app.delete("/channel/:channel", verifyToken, deleteChannel);
+  app.delete("/channel/:Channel", verifyToken, deleteChannel);
 
   // Route to update a channel's details
-  app.put("/channel/:channel", verifyToken, updateChannel);
+  app.put("/channel/:channelName", verifyToken, updateChannel);
 };

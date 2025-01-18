@@ -90,9 +90,8 @@ export default function ChannelOwner() {
     );
     if (confirmDelete) {
       axios
-        .post(
+        .delete(
           `http://localhost:5000/channel/${channel}`,
-          {},
           {
             headers: {
               Authorization: `JWT ${token}`,

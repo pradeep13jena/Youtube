@@ -194,7 +194,9 @@ export default function Account() {
         .then((data) => {
           alert(data.data.message);
           setUser(data.data.user);
-          console.log(data);
+          setOpen(false);
+          setChannelError({});
+          setChannelValues({});
         })
         .catch((error) => console.log(error.response.data.message));
     }
@@ -212,6 +214,9 @@ export default function Account() {
         })
         .then((data) => {
           setUser(data.data.newUser);
+          setOpen1(false);
+          setPlaylistError({});
+          setPLaylistValues({});
         })
         .catch((error) => alert(error.response.data.message));
     }
