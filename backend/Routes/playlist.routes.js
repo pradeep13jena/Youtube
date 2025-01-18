@@ -1,4 +1,8 @@
-import { addVideoToPlaylist, createPlaylist, deletePlaylist } from "../Controller/playlist.controller.js";
+import {
+  addVideoToPlaylist,
+  createPlaylist,
+  deletePlaylist,
+} from "../Controller/playlist.controller.js";
 import { verifyToken } from "../Middlewares/verifyToken.js";
 
 export const playlist = (app) => {

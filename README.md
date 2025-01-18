@@ -4,15 +4,24 @@ Welcome to the **YouTube Clone** project! This application replicates key featur
 
 ## Table of Contents
 
+- [Guest User](#guest-user)
 - [Getting Started](#getting-started)
 - [Design Overview](#design-overview)
 - [Features](#features)
 - [Constraints](#constraints)
 - [Technologies Used](#technologies-used)
 - [Future Improvements](#future-improvements)
+- [Directory Structure](#directory-structure)
 - [Links](#links)
 - [Credits](#credits)
 - [Contact](#contact)
+
+## Guest user
+
+To view this website as a guest user without login:
+
+- username: `username`
+- password: `password`
 
 ## Getting Started
 
@@ -20,28 +29,31 @@ To use this project, clone it from GitHub and follow these steps:
 
 1. **Install Dependencies**: Run the following command to install all required dependencies for both the front-end and back-end. As both the frontend and backend are in the same root folder there are 3 npm projects created. For frontend, backend and main folder.
 
-	- Root: 
-	```bash
-	npm install
-	```
+   - Root:
 
-	- Backend: 
-	```bash
-	cd backend
-	npm install
-	```
-	
-	- Frontend: 
-	```bash
-	cd frontend
-	npm install
-	```
-	
+   ```bash
+   npm install
+   ```
+
+   - Backend:
+
+   ```bash
+   cd backend
+   npm install
+   ```
+
+   - Frontend:
+
+   ```bash
+   cd frontend
+   npm install
+   ```
+
 2. As everything is set you do not need to run frontend and backend seperately because i have use `concurrently` as it runs both backend and frontend at once.
 
-	```bash
-	npm run dev
-	```
+   ```bash
+   npm run dev
+   ```
 
 3. Once you run this code your project will run the frontend in `http://localhost:5173` and the backend in `http://localhost:5000`
 
@@ -83,15 +95,12 @@ The YouTube Clone features a clean and modern design, ensuring a smooth user exp
 - **Front-End**:
   - React, React DOM Redux, Material UI
   - HTML5, CSS3, JavaScript
-  - React router dom, Axios, React Player, 
-  
+  - React router dom, Axios, React Player,
 - **Back-End**:
   - Node.js, Express.js, Mongoose
   - bcryptjs, cors, jsonwebtoken
-  
 - **Database**:
   - MongoDB
-  
 - **Other Tools**:
   - Imagekit
   - JWT for authentication
@@ -101,6 +110,91 @@ The YouTube Clone features a clean and modern design, ensuring a smooth user exp
 - **Personalized Recommendations**: Suggest videos based on user preferences.
 - **Live Stream**: Enable real-time stream for videos.
 - **Dark Mode**: Add a dark mode feature for better user experience.
+
+## Directory Structure
+
+Directory structure:
+└── pradeep13jena-youtube/
+├── README.md
+├── package.json
+├── backend/
+│ ├── package-lock.json
+│ ├── package.json
+│ ├── server.js
+│ ├── .gitignore
+│ ├── Controller/
+│ │ ├── Likes.controller.js
+│ │ ├── channel.controller.js
+│ │ ├── comments.controller.js
+│ │ ├── playlist.controller.js
+│ │ ├── subscribed.controller.js
+│ │ ├── users.controller.js
+│ │ └── video.controller.js
+│ ├── Middlewares/
+│ │ └── verifyToken.js
+│ ├── Models/
+│ │ ├── channel.model.js
+│ │ ├── users.model.js
+│ │ └── videos.model.js
+│ ├── Routes/
+│ │ ├── channel.routes.js
+│ │ ├── comment.routes.js
+│ │ ├── like.routes.js
+│ │ ├── playlist.routes.js
+│ │ ├── subscribe.routes.js
+│ │ ├── user.routes.js
+│ │ └── video.routes.js
+│ └── utils/
+│ └── getDateandTIme.js
+└── frontend/
+├── eslint.config.js
+├── index.css
+├── index.html
+├── main.jsx
+├── package-lock.json
+├── package.json
+├── postcss.config.js
+├── tailwind.config.js
+├── todo
+├── vite.config.js
+├── .gitignore
+└── src/
+├── components/
+│ ├── Account.jsx
+│ ├── App.jsx
+│ ├── Appnav.jsx
+│ ├── Auth.jsx
+│ ├── Channel.jsx
+│ ├── ChannelOwner.jsx
+│ ├── ChannelOwnerRender.jsx
+│ ├── ChannelRender.jsx
+│ ├── ChannelViewer.jsx
+│ ├── Channelseen.jsx
+│ ├── Comments.jsx
+│ ├── Filter.jsx
+│ ├── Header.jsx
+│ ├── Home.jsx
+│ ├── Homeviewer.jsx
+│ ├── Playlist.jsx
+│ ├── PlaylistCards.jsx
+│ ├── PlaylistRender.jsx
+│ ├── PlaylistViewer.jsx
+│ ├── Playlistseen.jsx
+│ ├── ShowPLaylist.jsx
+│ ├── Sidebar.jsx
+│ ├── Subscription.jsx
+│ ├── Watch.jsx
+│ ├── WatchSuggestion.jsx
+│ └── signIn.jsx
+├── features/
+│ ├── searchSlice.js
+│ ├── sidebarSlice.js
+│ ├── store.js
+│ ├── subscriptionslice.js
+│ └── tokenSlice.js
+└── styles/
+├── index.css
+└── style.css
 
 ## Links
 
@@ -122,5 +216,5 @@ The YouTube Clone features a clean and modern design, ensuring a smooth user exp
 ## Contact
 
 - **Portfolio**: [Your Portfolio](https://pradeepjena.netlify.app/)
-- **Email**: [your-email@example.com](mailto\:goldrushatjenas@gmail.com)
+- **Email**: [your-email@example.com](mailto:goldrushatjenas@gmail.com)
 - **LinkedIn**: [Your LinkedIn](https://linkedin.com/in/pradeepjena)

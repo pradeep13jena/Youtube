@@ -2,29 +2,30 @@ import React, { useState } from "react";
 import { Avatar } from "@mui/material";
 import { deepPurple } from "@mui/material/colors";
 import { MoreVertOutlined, VaccinesTwoTone } from "@mui/icons-material";
-import WatchLaterOutlinedIcon from '@mui/icons-material/WatchLaterOutlined';
+import WatchLaterOutlinedIcon from "@mui/icons-material/WatchLaterOutlined";
 import axios from "axios";
 import { Link } from "react-router-dom";
 
 export default function Homeviewer(cat) {
-  
-  function handleCLick(){
-    axios.put(`http://localhost:5000/playlist/${cat.video._id}`, 
-      {
-        "userName": cat.user.username,
-        "playlistName": cat.playlistName
-      }, 
-      {
-        headers: {
-          Authorization: `JWT ${cat.token}`,
+  function handleCLick() {
+    axios
+      .put(
+        `http://localhost:5000/playlist/${cat.video._id}`,
+        {
+          userName: cat.user.username,
+          playlistName: cat.playlistName,
+        },
+        {
+          headers: {
+            Authorization: `JWT ${cat.token}`,
+          },
         }
-      } 
       )
-      .then(data => console.log(data))
-      .catch(data => console.log(data))
+      .then((data) => console.log(data))
+      .catch((data) => console.log(data));
   }
 
-  const [openModal, setOpenModal] = useState(false)
+  const [openModal, setOpenModal] = useState(false);
 
   return (
     <div className="flex flex-col">
@@ -62,10 +63,11 @@ export default function Homeviewer(cat) {
             </div>
           </div>
           <div className="">
-            <div onClick={() => setOpenModal(!openModal)} className="cursor-pointer hover:bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center hover:border-gray-300">
-              <MoreVertOutlined
-              className="text-gray-700"
-              />
+            <div
+              onClick={() => setOpenModal(!openModal)}
+              className="cursor-pointer hover:bg-gray-200 rounded-full w-10 h-10 flex items-center justify-center hover:border-gray-300"
+            >
+              <MoreVertOutlined className="text-gray-700" />
             </div>
             <div
               className={` bottom-16 right-8 rounded-md shadow-md bg-white ${

@@ -18,7 +18,8 @@ const channelSchema = new mongoose.Schema({
   },
   channelBanner: {
     type: String,
-    default: "https://ik.imagekit.io/kf28wicizj/Youtube/Untitled%20design.png?updatedAt=1736418477272",
+    default:
+      "https://ik.imagekit.io/kf28wicizj/Youtube/Untitled%20design.png?updatedAt=1736418477272",
     validate: {
       validator: function (v) {
         return /^(http|https):\/\/[^\s]+$/.test(v); // Validates URL format
@@ -28,7 +29,8 @@ const channelSchema = new mongoose.Schema({
   },
   channelLogo: {
     type: String,
-    default: "https://ik.imagekit.io/kf28wicizj/Youtube/Untitled%20design%20(1).png?updatedAt=1736419152703",
+    default:
+      "https://ik.imagekit.io/kf28wicizj/Youtube/Untitled%20design%20(1).png?updatedAt=1736419152703",
     validate: {
       validator: function (v) {
         return /^(http|https):\/\/[^\s]+$/.test(v); // Validates URL format
@@ -49,6 +51,6 @@ const channelSchema = new mongoose.Schema({
   },
 });
 
-const channelModel = mongoose.model('Channel', channelSchema);
+const channelModel = mongoose.model("Channel", channelSchema);
 
-export default channelModel
+export default channelModel;

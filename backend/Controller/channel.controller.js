@@ -220,7 +220,7 @@ export const createChannel = async (req, res) => {
 export const viewChannel = async (req, res) => {
   try {
     const { channel } = req.params; // Destructure the given url parameter
-    
+
     // Basic validation to check the given input
     if (!channel || typeof channel !== "string" || channel.trim() === "") {
       return res.status(400).json({ message: "Invalid channel name provided" });
@@ -242,6 +242,7 @@ export const viewChannel = async (req, res) => {
   }
 };
 
+// Logic to delete channel.
 export const deleteChannel = async (req, res) => {
   const { Channel } = req.params;
 
@@ -277,6 +278,7 @@ export const deleteChannel = async (req, res) => {
   }
 };
 
+// Logic to update channel
 export const updateChannel = async (req, res) => {
   try {
     const { channelBanner, channelLogo, description, newChannelName } =
@@ -290,11 +292,9 @@ export const updateChannel = async (req, res) => {
 
     // Ensure the current channelName is provided to locate the channel
     if (!channelName) {
-      return res
-        .status(400)
-        .json({
-          message: "Current channel name is required to update the channel.",
-        });
+      return res.status(400).json({
+        message: "Current channel name is required to update the channel.",
+      });
     }
 
     // Find the channel by current name
@@ -343,11 +343,9 @@ export const updateChannel = async (req, res) => {
     res.status(200).json({ message: "Channel updated successfully.", channel });
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({
-        message: "An error occurred while updating the channel.",
-        error,
-      });
+    res.status(500).json({
+      message: "An error occurred while updating the channel.",
+      error,
+    });
   }
 };

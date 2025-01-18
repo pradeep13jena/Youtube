@@ -1,5 +1,9 @@
 import { verifyToken } from "../Middlewares/verifyToken.js";
-import { addComment, editComment, deleteComment } from "../Controller/comments.controller.js";
+import {
+  addComment,
+  editComment,
+  deleteComment,
+} from "../Controller/comments.controller.js";
 
 export const comment = (app) => {
   // Add a new comment

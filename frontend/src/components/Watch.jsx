@@ -1,3 +1,4 @@
+// Component responsible for playing the video
 import React, { useState, useEffect } from "react";
 import ReactPlayer from "react-player";
 import NotificationsOutlinedIcon from "@mui/icons-material/NotificationsOutlined";
@@ -7,7 +8,7 @@ import BookmarkBorderSharpIcon from "@mui/icons-material/BookmarkBorderSharp";
 import MoreHorizOutlinedIcon from "@mui/icons-material/MoreHorizOutlined";
 import ReplySharpIcon from "@mui/icons-material/ReplySharp";
 import WatchSuggestion from "./WatchSuggestion";
-import { Link, useParams, useSearchParams } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuth } from "../features/tokenSlice.js";
@@ -25,15 +26,14 @@ const style = {
 
 function formatNumber(num) {
   if (num >= 1_000_000_000) {
-    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, '') + 'b';
+    return (num / 1_000_000_000).toFixed(1).replace(/\.0$/, "") + "b";
   } else if (num >= 1_000_000) {
-    return (num / 1_000_000).toFixed(1).replace(/\.0$/, '') + 'm';
+    return (num / 1_000_000).toFixed(1).replace(/\.0$/, "") + "m";
   } else if (num >= 1_000) {
-    return (num / 1_000).toFixed(1).replace(/\.0$/, '') + 'k';
+    return (num / 1_000).toFixed(1).replace(/\.0$/, "") + "k";
   }
   return num;
 }
-
 
 export default function Watch() {
   const [searchParams] = useSearchParams();
@@ -41,10 +41,10 @@ export default function Watch() {
   const { token } = useSelector(selectAuth);
 
   const [expand, setExpand] = useState(false);
-  const [allVideos, setAllVideos] = useState({})
-  const [showComment, setShowComment] = useState(false)
+  const [allVideos, setAllVideos] = useState({});
+  const [showComment, setShowComment] = useState(false);
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
 
   useEffect(() => {
     if (token && _id) {
@@ -80,31 +80,31 @@ export default function Watch() {
         }
       };
 
-      axios.get('http://localhost:5000/videos',           
-        {
+      axios
+        .get("http://localhost:5000/videos", {
           headers: {
             Authorization: `JWT ${token}`,
-          }
+          },
         })
-          .then((data) => {
-            setAllVideos(data.data)
-          })
-          .catch((err) => {
-            console.log(err)
-          })
+        .then((data) => {
+          setAllVideos(data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
-        axios.get('http://localhost:5000/videos',           
-          {
-            headers: {
-              Authorization: `JWT ${token}`,
-            }
-          })
-            .then((data) => {
-              setAllVideos(data.data)
-            })
-            .catch((err) => {
-              console.log(err)
-            })
+      axios
+        .get("http://localhost:5000/videos", {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        })
+        .then((data) => {
+          setAllVideos(data.data);
+        })
+        .catch((err) => {
+          console.log(err);
+        });
 
       fetchUserData();
     }
@@ -122,6 +122,7 @@ export default function Watch() {
     );
   }, [user, videos]);
 
+  // Function to add comment
   const handleAddComment = () => {
     if (newComment.trim() !== "") {
       axios
@@ -145,6 +146,7 @@ export default function Watch() {
     }
   };
 
+  // Function to like video
   function likeVideo() {
     axios
       .put(
@@ -185,6 +187,7 @@ export default function Watch() {
     fetchUserData();
   }
 
+  // Function to dislike videos
   function dislikeVideo() {
     axios
       .put(
@@ -200,6 +203,7 @@ export default function Watch() {
       .catch((err) => console.log(err));
   }
 
+  // Functino to handle subscribers
   function handlesub() {
     axios
       .put(
@@ -213,7 +217,7 @@ export default function Watch() {
           },
         }
       )
-      .then((data) => { 
+      .then((data) => {
         Setsub(!sub);
         setVideos((x) => ({
           ...x,
@@ -223,17 +227,18 @@ export default function Watch() {
       .catch((err) => console.log(err));
   }
 
+  // Funciton to convert the simple date to more readable format
   function convertToNormalDate(isoDate) {
     const date = new Date(isoDate);
-  
+
     // Extract date components
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, "0"); // Months are 0-indexed
     const day = String(date.getDate()).padStart(2, "0");
-  
+
     return `${day}-${month}-${year}`; // Format as YYYY-MM-DD
   }
-  
+
   return (
     <>
       {!token ? (
@@ -264,7 +269,9 @@ export default function Watch() {
                 <h1 className="videoTitle font-roboto text-sm md:text-[1.3rem] font-semibold">
                   {videos.title}
                 </h1>
-                <p className="text-xs md:text-sm">{formatNumber(videos.views)} views</p>
+                <p className="text-xs md:text-sm">
+                  {formatNumber(videos.views)} views
+                </p>
               </div>
 
               {/* Channel Details and Action */}
@@ -359,7 +366,8 @@ export default function Watch() {
               {/* Description bar */}
               <div className="p-4 w-full bg-gray-200 rounded-lg">
                 <h1 className="text-black font-roboto text-sm font-medium mb-2">
-                {convertToNormalDate(videos.uploadDate)} • {formatNumber(videos.views)} views 
+                  {convertToNormalDate(videos.uploadDate)} •{" "}
+                  {formatNumber(videos.views)} views
                 </h1>
                 <p
                   className={`font-roboto text-sm text-gray-700 duration-300 ${
@@ -377,8 +385,10 @@ export default function Watch() {
               </div>
             </div>
 
-            <div className={`comments px-2 lg:px-0 flex flex-col gap-4 mb-4
-              `}>
+            <div
+              className={`comments px-2 lg:px-0 flex flex-col gap-4 mb-4
+              `}
+            >
               <h1 className="text-black text-xl font-bold font-roboto mt-4">
                 {comments?.length} Comments
               </h1>
@@ -417,7 +427,11 @@ export default function Watch() {
                 </div>
 
                 {/* Comments Section */}
-                <div className={`mt-4 ${showComment ? "" : "h-16 overflow-hidden"}`}>
+                <div
+                  className={`mt-4 ${
+                    showComment ? "" : "h-16 overflow-hidden"
+                  }`}
+                >
                   {user && comments?.length > 0 ? (
                     comments.map((comment, index) => (
                       <>
@@ -438,7 +452,12 @@ export default function Watch() {
                   )}
                 </div>
               </div>
-              <div onClick={() => setShowComment(!showComment)} className="w-full text-black flex justify-center">{showComment ? "less..." : "more..."}</div>
+              <div
+                onClick={() => setShowComment(!showComment)}
+                className="w-full text-black flex justify-center"
+              >
+                {showComment ? "less..." : "more..."}
+              </div>
             </div>
           </div>
           <div className="w-full lg:w-[30%] grid grid-cols-1 gap-2 sm:gap-3 px-2">
@@ -446,12 +465,15 @@ export default function Watch() {
               Suggested videos
             </h1>
             <>
-            {allVideos && allVideos.length > 0 ? (
-              allVideos.map((cat) => 
-            <><WatchSuggestion cat={cat} /></>)
-            ) : (
-              <p>No videos available</p>
-            )}
+              {allVideos && allVideos.length > 0 ? (
+                allVideos.map((cat) => (
+                  <>
+                    <WatchSuggestion cat={cat} />
+                  </>
+                ))
+              ) : (
+                <p>No videos available</p>
+              )}
             </>
           </div>
         </div>

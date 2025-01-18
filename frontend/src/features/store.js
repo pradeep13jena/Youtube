@@ -1,8 +1,8 @@
 import { configureStore } from "@reduxjs/toolkit";
 import sidebar from "./sidebarSlice";
-import tokenReducer from "./tokenSlice"
-import searchbar from "./searchSlice"
-import subscriptionReducer from "./subscriptionslice"
+import tokenReducer from "./tokenSlice";
+import searchbar from "./searchSlice";
+import subscriptionReducer from "./subscriptionslice";
 
 export const store = configureStore({
   reducer: {
@@ -10,5 +10,5 @@ export const store = configureStore({
     auth: tokenReducer,
     searchbar: searchbar,
     subscription: subscriptionReducer,
-  }
-})
+  },
+});
