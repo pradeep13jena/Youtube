@@ -98,9 +98,8 @@ export default function Comments({
         .catch((error) => alert(error.response.data.message));
     }
   };
-
   return (
-    <div className="flex items-center justify-start gap-3 mt-4   ">
+    <div key={comment._id} className="flex items-center justify-start gap-3 mt-4   ">
       <div className="flex gap-2 items-start flex-1">
         <div className="flex flex-col gap-1 flex-1">
           <p className="font-medium text-base text-gray-900">

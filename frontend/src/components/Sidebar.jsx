@@ -14,6 +14,7 @@ import { selectAuth } from "../features/tokenSlice";
 
 export default function Sidebar() {
   const isToggle = useSelector((state) => state.sidebar.isVisible);
+  const render = useSelector((state) => state.subscription.subscriptionList);
   const { token } = useSelector(selectAuth);
 
   const menuItem = [
@@ -67,7 +68,7 @@ export default function Sidebar() {
     if (token) {
       fetchUserData();
     }
-  }, []);
+  }, [render]);
 
   return (
     <nav

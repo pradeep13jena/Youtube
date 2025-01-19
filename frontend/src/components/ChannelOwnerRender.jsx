@@ -36,7 +36,7 @@ function formatNumber(num) {
   return num.toString();
 }
 
-export default function ChannelOwnerRender({ cat }) {
+export default function ChannelOwnerRender({ cat, setChannelDetails }) {
   const { token } = useSelector(selectAuth);
   const [openModal, setOpenModal] = useState(false);
 
@@ -132,7 +132,7 @@ export default function ChannelOwnerRender({ cat }) {
           },
         }
       )
-      .then((data) => console.log(data))
+      .then((data) => setChannelDetails(data.data.updatedChannel))
       .catch((err) => console.log(err));
   }
 

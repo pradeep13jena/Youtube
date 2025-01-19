@@ -90,7 +90,7 @@ export default function Homeviewer(cat) {
               {cat.title}
             </h1>
             <div className="flex md:flex-col items-center md:items-start">
-              <Link to={`/channel/${cat.channelDetails?.channelName}}`}>
+              <Link to={`/channel/${cat.channelDetails?.channelName}`}>
                 <p className="text-gray-700 text-[11px] md:text-[13px]">
                   {cat?.channelDetails?.channelName}
                 </p>

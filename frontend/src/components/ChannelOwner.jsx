@@ -83,7 +83,7 @@ export default function ChannelOwner() {
     }
   }, [token, channel]); // Added token and channel to dependency array
 
-  // Delete video
+  // Delete channel
   function deleteChannel(channel) {
     const confirmDelete = window.confirm(
       `Are you sure you want to delete ${channel}?`
@@ -184,6 +184,7 @@ export default function ChannelOwner() {
         )
         .then((data) => {
           alert(data.data.message);
+          console.log(data)
           setChannelDetails(data.data.channelWithVideo);
         })
         .catch((error) => console.log(error));
@@ -231,7 +232,7 @@ export default function ChannelOwner() {
             },
           }
         )
-        .then((data) => console.log(data))
+        .then((data) => setChannelDetails(data.data.channel))
         .catch((err) => console.log(err));
     }
   }
@@ -277,7 +278,7 @@ export default function ChannelOwner() {
             },
           }
         )
-        .then((data) => console.log(data))
+        .then((data) => setChannelDetails(data.data.channel))
         .catch((err) => console.log(err));
     }
   }
@@ -343,6 +344,7 @@ export default function ChannelOwner() {
           if (data.data.channel.channelName) {
             navigate(`/owner/${data.data.channel.channelName}`);
           }
+          setChannelDetails(data.data.channel)
         })
         .catch((err) => alert(err.response.data.message));
     }
@@ -727,7 +729,7 @@ export default function ChannelOwner() {
             {channelDetails &&
               channelDetails.videoDetails &&
               channelDetails.videoDetails.map((cat, index) => {
-                return <ChannelOwnerRender key={index} cat={cat} />;
+                return <ChannelOwnerRender key={index} setChannelDetails={setChannelDetails} cat={cat} />;
               })}
           </div>
         </>

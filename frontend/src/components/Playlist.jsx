@@ -72,10 +72,11 @@ export default function Playlist() {
                         title={video.title}
                         channelName={video.channelName}
                         views={video.views}
+                        setUser={setUser}
                       />
                     ))
                   ) : (
-                    <p key={index}>No videos available in this playlist</p>
+                    <p key={index}>No videos available in this playlist...</p>
                   )
                 )}
           </div>

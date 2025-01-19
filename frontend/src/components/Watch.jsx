@@ -13,6 +13,7 @@ import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { selectAuth } from "../features/tokenSlice.js";
 import Comments from "./comments.jsx";
+import { render } from "../features/subscriptionslice.js";
 
 const style = {
   border: "1px solid #ddd",
@@ -46,6 +47,24 @@ export default function Watch() {
 
   const dispatch = useDispatch();
 
+  const fetchUserData = async () => {
+    try {
+      const response = await axios.post(
+        "http://localhost:5000/user",
+        {},
+        {
+          headers: {
+            Authorization: `JWT ${token}`,
+          },
+        }
+      );
+      setUser(response.data);
+    } catch (error) {
+      console.error("Error fetching user data:", error);
+    }
+  };
+
+
   useEffect(() => {
     if (token && _id) {
       // Ensure token and _id are available before making the request
@@ -62,23 +81,6 @@ export default function Watch() {
         .catch((error) => {
           console.error("Error fetching video details:", error);
         });
-
-      const fetchUserData = async () => {
-        try {
-          const response = await axios.post(
-            "http://localhost:5000/user",
-            {},
-            {
-              headers: {
-                Authorization: `JWT ${token}`,
-              },
-            }
-          );
-          setUser(response.data);
-        } catch (error) {
-          console.error("Error fetching user data:", error);
-        }
-      };
 
       axios
         .get("http://localhost:5000/videos", {
@@ -120,6 +122,8 @@ export default function Watch() {
     const value = user?.subscriptionDetails?.some(
       (x) => videos?.channelName === x.channelName
     );
+    Setsub(value)
+
   }, [user, videos]);
 
   // Function to add comment
@@ -218,11 +222,12 @@ export default function Watch() {
         }
       )
       .then((data) => {
-        Setsub(!sub);
         setVideos((x) => ({
           ...x,
           channelDetails: data.data.channelSubscribersCount,
         }));
+        dispatch(render())
+        fetchUserData()
       })
       .catch((err) => console.log(err));
   }
@@ -281,19 +286,23 @@ export default function Watch() {
                   {/* CHannel Avatar */}
                   <div className="justify-between lg:justify-start flex items-center gap-3">
                     <div>
-                      <img
-                        src={
-                          videos &&
-                          videos.channelDetails &&
-                          videos.channelDetails.channelLogo
-                        }
-                        className="w-9 h-9 rounded-full"
-                      />
+                      <Link to={`/channel/${videos.channelDetails?.channelName}`}>
+                        <img
+                          src={
+                            videos &&
+                            videos.channelDetails &&
+                            videos.channelDetails.channelLogo
+                          }
+                          className="w-9 h-9 rounded-full"
+                        />
+                      </Link>
                     </div>
                     <div className="flex flex-col">
-                      <h1 className="font-medium font-roboto">
-                        {videos.channelName}
-                      </h1>
+                      <Link to={`/channel/${videos.channelDetails?.channelName}`}>
+                        <h1 className="font-medium font-roboto">
+                          {videos.channelName}
+                        </h1>
+                      </Link>
                       <p className="text-gray-400 font-roboto text-xs md:text-sm">
                         {videos &&
                           videos.channelDetails &&
@@ -434,16 +443,15 @@ export default function Watch() {
                 >
                   {user && comments?.length > 0 ? (
                     comments.map((comment, index) => (
-                      <>
                         <Comments
-                          key={index}
+                          id={comment._id}
+                          key={comment._id}
                           user={user}
                           videos={videos}
                           token={token}
                           setComments={setComments}
                           comment={comment}
                         />
-                      </>
                     ))
                   ) : (
                     <p className="text-gray-500">
@@ -464,17 +472,13 @@ export default function Watch() {
             <h1 className="text-2xl font-roboto font-semibold mb-5">
               Suggested videos
             </h1>
-            <>
               {allVideos && allVideos.length > 0 ? (
                 allVideos.map((cat) => (
-                  <>
-                    <WatchSuggestion cat={cat} />
-                  </>
+                    <WatchSuggestion key={cat._id} cat={cat} />
                 ))
               ) : (
                 <p>No videos available</p>
               )}
-            </>
           </div>
         </div>
       )}

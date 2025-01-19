@@ -280,10 +280,10 @@ export const uploadVideo = async (req, res) => {
     }
 
     // Insert the video ID into the channel's videos array
-    channelFind.videos.push(videoFind._id);
+    await channelFind.videos.push(videoFind._id);
 
     // Update the channel with the new video ID
-    channelFind.save();
+    await channelFind.save();
 
     const channelWithVideo = await getVideoDetails(channel);
 
@@ -340,6 +340,7 @@ export const updateVideo = async (req, res) => {
 export const deleteVideo = async (req, res) => {
   try {
     const { channel, id } = req.params;
+    console.log(req.params)
 
     // Find and delete the video from the videoModel
     const video = await videoModel.findOneAndDelete({ _id: id });
@@ -355,13 +356,15 @@ export const deleteVideo = async (req, res) => {
       { new: true } // Return the updated document
     );
 
+    const channelWithVideo = await getVideoDetails(channel);
+
     // If the channel exists and the video was removed
     if (channelExists) {
       return res
         .status(200)
         .json({
           message: "Video deleted and removed from channel successfully",
-          updatedChannel: channelExists,
+          updatedChannel: channelWithVideo,
         });
     }
 

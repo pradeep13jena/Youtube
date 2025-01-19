@@ -21,7 +21,7 @@ export default function Homeviewer(cat) {
           },
         }
       )
-      .then((data) => console.log(data))
+      .then((data) => {cat.setUser(data.data.userDetails)})
       .catch((data) => console.log(data));
   }
 

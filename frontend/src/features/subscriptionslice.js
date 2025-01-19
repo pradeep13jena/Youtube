@@ -4,15 +4,15 @@ import reducer from "./tokenSlice";
 const subscriptionSlice = createSlice({
   name: "subscription",
   initialState: {
-    subscriptionList: {},
+    subscriptionList: false,
   },
   reducers: {
-    updateList: (state, action) => {
-      state.subscriptionList = action.payload;
+    render: (state, action) => {
+      state.subscriptionList = !state.subscriptionList;
     },
   },
 });
 
-export const { updateList } = subscriptionSlice.actions;
+export const { render } = subscriptionSlice.actions;
 
 export default subscriptionSlice.reducer;

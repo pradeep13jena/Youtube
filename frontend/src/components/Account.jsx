@@ -43,6 +43,7 @@ const style1 = {
 };
 
 export default function Account() {
+
   // UseState for modal boxes
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
@@ -484,7 +485,7 @@ export default function Account() {
                     </Link>
                     <div className="flex items-center justify-between ">
                       <p className="text-sm font-medium ">{cat.name}</p>
-                      <div onClick={handleClick}>
+                      <div onClick={handleClick} className="cursor-pointer w-9  h-9  flex justify-center items-center transition-all duration-150 hover:bg-gray-300 rounded-full">
                         <MoreVertIcon />
                       </div>
                     </div>

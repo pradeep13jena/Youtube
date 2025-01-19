@@ -1,5 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { render } from "../features/subscriptionslice";
 
 // Importing child component
 import ChannelRender from "./ChannelRender";
@@ -20,6 +22,7 @@ export default function Channel() {
   const [user, setUser] = useState({});
   const { token } = useSelector(selectAuth);
   const { channel } = useParams();
+  const dispatch = useDispatch()
 
   function handlesub() {
     axios
@@ -35,6 +38,7 @@ export default function Channel() {
       .then((data) => {
         refetchChannelDetails(); // Refetch updated channel details
         refetchUserDetails(); // Refetch updated user details
+        dispatch(render())
       })
       .catch((err) => console.error("Error subscribing:", err));
   }
@@ -85,15 +89,17 @@ export default function Channel() {
   }
 
   useEffect(() => {
-    refetchChannelDetails();
-  }, [token, channel]); // Fetch channel details on mount or when token/channel changes
-
-  useEffect(() => {
     const value = user?.subscriptionDetails?.some(
       (x) => channelDetails?.channelName === x.channelName
     );
     Setsub(value);
   }, [user, channelDetails]);
+
+
+  useEffect(() => {
+    refetchChannelDetails();
+    refetchUserDetails()
+  }, [token, channel]); // Fetch channel details on mount or when token/channel changes
 
   return (
     <div className="md:h-[calc(100vh-59.2px)] overflow-y-auto px-3 md:px-24 flex flex-col gap-4 md:gap-7 py-0 w-full">

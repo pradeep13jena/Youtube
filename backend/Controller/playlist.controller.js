@@ -232,17 +232,20 @@ export const addVideoToPlaylist = async (req, res) => {
       // Video already exists in the playlist; remove it
       playlist.videos.splice(videoIndex, 1);
       await user.save();
-      return res.status(200).send({
+      const data = await getUserDetails(userName)
+      return res.status(200).json({
         message: `Video removed from playlist '${playlistName}'.`,
+        userDetails : data
       });
     }
 
     // Add the video to the playlist
     playlist.videos.push(id);
     await user.save();
-
-    res.status(200).send({
+    const data = await getUserDetails(userName)
+    res.status(200).json({
       message: `Video added to playlist '${playlistName}'.`,
+      userDetails : data
     });
   } catch (error) {
     console.error("Error adding video to playlist:", error);
